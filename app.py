@@ -68,34 +68,69 @@ logger.info("Whisper model loaded successfully")
 # Supportive messages by mood
 SUPPORTIVE_MESSAGES = {
     'sad': [
-        "Don’t give up, things can get better.",
-        "It’s okay to feel sad. Brighter days are ahead.",
-        "You’re not alone. Reach out if you need support."
+        "Your feelings are valid, and it's okay to not be okay right now. Remember that sadness, like all emotions, is temporary. Consider doing something kind for yourself today - maybe a warm bath, your favorite music, or reaching out to someone who cares about you.",
+        "I hear the pain in your words, and I want you to know that you don't have to carry this alone. Sadness can feel overwhelming, but you're stronger than you realize. Sometimes the bravest thing we can do is simply get through the day.",
+        "It takes courage to acknowledge when we're feeling down. Your sadness doesn't make you weak - it makes you human. Consider what your body and mind might need right now. Sometimes even small acts of self-care can make a difference."
+    ],
+    'melancholy': [
+        "There's a beautiful depth to your reflection. Melancholy often brings with it wisdom and insight. Honor this contemplative space you're in - it might be preparing you for something meaningful.",
+        "Your thoughtful sadness speaks to your sensitivity and depth. These moments of quiet reflection often lead to our most profound realizations. Trust that this feeling has something to teach you.",
+        "There's something poetic about the way you're processing your feelings. Melancholy isn't just sadness - it's often a sign of growth and transformation. Be patient with yourself through this process."
     ],
     'angry': [
-        "Take a deep breath. It’s okay to feel angry sometimes.",
-        "Try to let go of what you can’t control.",
-        "Channel your anger into something positive."
+        "Your anger is telling you something important - it's a signal that something needs to change. Anger can be a powerful force for positive transformation when we learn to channel it constructively. What might your anger be trying to protect you from?",
+        "I can feel the intensity of your emotions, and that's completely valid. Anger often masks other feelings like hurt, fear, or disappointment. Try to identify what's beneath the anger - it might help you address the root cause.",
+        "Your frustration is understandable. Sometimes anger is our mind's way of saying 'this isn't right' or 'I deserve better.' Consider what boundaries you might need to set or what changes you might need to make."
     ],
-    'happy': [
-        "That’s wonderful! Keep enjoying the good moments.",
-        "Your happiness is contagious!",
-        "Celebrate your wins, big or small."
-    ],
-    'calm': [
-        "Thank you for sharing. Journaling is a great habit.",
-        "Keep reflecting and taking care of yourself.",
-        "Every day is a new opportunity."
-    ],
-    'neutral': [
-        "Thank you for sharing. Journaling is a great habit.",
-        "Keep reflecting and taking care of yourself.",
-        "Every day is a new opportunity."
+    'frustrated': [
+        "Frustration is often a sign that you care deeply about something. It shows you have standards and expectations - that's not a bad thing! The challenge is finding constructive ways to channel that energy.",
+        "I can hear how much this matters to you. Frustration can be exhausting, but it also shows your commitment to things being better. Sometimes the most productive thing we can do is step back and reassess our approach.",
+        "Your frustration is completely valid. When things don't go as planned, it's natural to feel this way. Consider what's within your control and what might need a different approach or perspective."
     ],
     'upset': [
-        "It’s okay to feel upset. Try to talk to someone you trust.",
-        "Expressing your feelings is healthy.",
-        "You’re stronger than you think."
+        "It's clear that something has deeply affected you, and that's okay. Being upset shows that you're engaged with life and that things matter to you. Sometimes the best thing we can do is simply acknowledge our feelings without trying to fix them immediately.",
+        "Your feelings are important, and it's brave to acknowledge when you're upset. This discomfort you're feeling might be temporary, but it's also real and valid. Consider what support you might need right now.",
+        "I can sense the weight of what you're carrying. Being upset doesn't mean you're not handling things well - it means you're human. Sometimes the most healing thing we can do is give ourselves permission to feel exactly as we do."
+    ],
+    'happy': [
+        "Your joy is absolutely radiant! Happiness like this is precious and worth celebrating. These moments of pure contentment are what make life beautiful. Consider what made this possible and how you might create more of these moments.",
+        "I can feel your positive energy through your words! Happiness is contagious, and you're spreading it beautifully. These good feelings are well-deserved - enjoy every moment of them.",
+        "Your happiness is so genuine and uplifting! When we're truly happy, it shows in everything we do and say. This is the kind of joy that comes from being aligned with what matters most to you."
+    ],
+    'excited': [
+        "Your enthusiasm is absolutely infectious! That spark of excitement you're feeling is precious - it's your passion and energy coming through. When we're excited about something, it often means we're on the right path.",
+        "I love the energy you're bringing! Excitement is such a beautiful emotion - it's hope and anticipation combined. This feeling often leads to our most creative and productive moments.",
+        "Your excitement is palpable and wonderful! That kind of genuine enthusiasm is rare and valuable. It shows you're engaged with life and open to possibilities. Keep that energy flowing!"
+    ],
+    'calm': [
+        "There's such a peaceful quality to your presence. This inner calm you're experiencing is a beautiful state - it's the foundation for clarity, wisdom, and authentic connection. Cherish this centered feeling.",
+        "Your calmness is truly grounding. This peaceful state you're in allows for deeper reflection and more meaningful experiences. It's a sign of inner strength and emotional maturity.",
+        "I can feel the serenity in your words. This calm you're experiencing is precious - it's often when we're most open to insights and new perspectives. This peaceful state is worth protecting and nurturing."
+    ],
+    'content': [
+        "You sound genuinely content, and that's a beautiful place to be. Contentment isn't about having everything perfect - it's about being at peace with where you are. This balanced state is often the foundation for lasting happiness.",
+        "There's a lovely sense of satisfaction in your tone. Contentment is such an underrated emotion - it's the quiet joy of being okay with yourself and your circumstances. This is a state worth appreciating.",
+        "Your contentment is so genuine and refreshing. This feeling of being at ease with yourself and your life is precious. Contentment often comes from accepting what is while still being open to growth."
+    ],
+    'tired': [
+        "Your exhaustion is valid, and it's okay to acknowledge it. Sometimes our bodies and minds need rest more than we realize. Consider what kind of rest would be most restorative for you right now.",
+        "I can hear the fatigue in your voice, and that's completely understandable. Being tired doesn't mean you're not doing enough - it might mean you've been doing too much. Give yourself permission to rest.",
+        "Your tiredness is telling you something important. Sometimes the most productive thing we can do is rest. Consider what your body and mind might need to feel more energized and refreshed."
+    ],
+    'anxious': [
+        "I can sense the tension you're carrying, and I want you to know that anxiety is a normal human experience. Your body is trying to protect you, even if it feels overwhelming. Consider what might help you feel more grounded right now.",
+        "Your anxiety is valid, and it's okay to feel this way. Anxiety often comes from caring deeply about things and wanting to do well. Sometimes the most helpful thing is to acknowledge the feeling without fighting it.",
+        "I can hear the worry in your voice, and that's completely understandable. Anxiety can feel isolating, but you're not alone in this experience. Consider what might help you feel more supported and less overwhelmed."
+    ],
+    'curious': [
+        "Your curiosity is such a beautiful quality! That desire to understand and explore is what drives growth and learning. Curiosity keeps us engaged with life and open to new possibilities.",
+        "I love the inquisitive energy you're bringing! Curiosity is often the first step toward discovery and growth. That sense of wonder you're feeling is precious - it keeps life interesting and meaningful.",
+        "Your curiosity is absolutely wonderful! That desire to learn and understand shows an active, engaged mind. Curiosity often leads to our most interesting discoveries and connections."
+    ],
+    'neutral': [
+        "Sometimes being neutral is exactly where we need to be. It's a balanced state that allows for reflection and observation. Consider what might be beneath the surface of this neutral feeling.",
+        "Your neutral state might be a sign of processing or transition. Sometimes we need these balanced moments to integrate our experiences. This calm center can be a good foundation for whatever comes next.",
+        "There's wisdom in being able to stay neutral when needed. This balanced state allows you to observe without being overwhelmed by emotions. Consider what this neutrality might be preparing you for."
     ]
 }
 
