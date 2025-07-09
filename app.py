@@ -312,15 +312,23 @@ def journal_entry():
             wav_temp_file_path = SecurityValidator.create_secure_temp_file(b'', '.wav')
             
             try:
-                # Convert audio using ffmpeg with security considerations
-                result = subprocess.run([
-                    'ffmpeg', '-y', '-i', temp_file_path, '-ar', '16000', '-ac', '1', wav_temp_file_path
-                ], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=30)
-                
-                logger.info("Audio converted successfully")
+                # Try to use ffmpeg if available, otherwise use direct processing
+                try:
+                    # Convert audio using ffmpeg with security considerations
+                    result = subprocess.run([
+                        'ffmpeg', '-y', '-i', temp_file_path, '-ar', '16000', '-ac', '1', wav_temp_file_path
+                    ], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=30)
+                    
+                    logger.info("Audio converted successfully with ffmpeg")
+                    audio_file_for_processing = wav_temp_file_path
+                    
+                except (subprocess.TimeoutExpired, subprocess.CalledProcessError, FileNotFoundError):
+                    logger.info("ffmpeg not available, using direct audio processing")
+                    # Use the original file directly if it's already in a supported format
+                    audio_file_for_processing = temp_file_path
 
                 # Transcribe and extract features
-                transcription = whisper_model.transcribe(wav_temp_file_path)["text"]
+                transcription = whisper_model.transcribe(audio_file_for_processing)["text"]
                 
                 # Validate transcribed text
                 is_valid, error_msg = SecurityValidator.validate_text_input(
@@ -333,15 +341,12 @@ def journal_entry():
                     logger.warning(f"Transcribed text validation failed: {error_msg}")
                     return jsonify({'error': error_msg}), 400
                 
-                y, sr = librosa.load(wav_temp_file_path, sr=16000)
+                y, sr = librosa.load(audio_file_for_processing, sr=16000)
                 features = extract_features(y, sr)
                 logger.info("Audio features extracted successfully")
                 
-            except subprocess.TimeoutExpired:
-                logger.error("Audio conversion timed out")
-                return jsonify({'error': 'Audio processing timed out. Please try again.'}), 408
-            except subprocess.CalledProcessError as e:
-                logger.error(f"Audio conversion failed: {e}")
+            except Exception as e:
+                logger.error(f"Audio processing error: {e}")
                 return jsonify({'error': 'Audio processing failed. Please try again.'}), 500
             except Exception as e:
                 logger.error(f"Audio processing error: {e}", exc_info=True)
