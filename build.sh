@@ -7,9 +7,9 @@ echo "🚀 Starting build process..."
 echo "📋 Python version:"
 python --version
 
-# Upgrade pip and install build tools
-echo "🔧 Upgrading pip and build tools..."
-pip install --upgrade pip setuptools wheel
+# Upgrade pip
+echo "🔧 Upgrading pip..."
+pip install --upgrade pip
 
 # Install dependencies
 echo "📦 Installing dependencies..."
