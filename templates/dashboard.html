@@ -182,6 +182,11 @@
     </style>
 </head>
 <body>
+    <!-- Theme Toggle Button -->
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark/light mode">
+        <span class="icon" id="themeIcon">🌙</span>
+    </button>
+    
     <div class="dashboard-wrapper">
         <div class="dashboard-container">
             <header class="header">
@@ -211,5 +216,14 @@
     </div>
 
     <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+    
+    <!-- Immediate theme application -->
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            console.log('Immediate theme applied:', savedTheme);
+        })();
+    </script>
 </body>
 </html> 

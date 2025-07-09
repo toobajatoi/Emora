@@ -4,6 +4,66 @@ Created by Tooba Jatoi
 Copyright © 2025 Tooba Jatoi. All rights reserved.
 */
 
+// Theme management
+let currentTheme = localStorage.getItem('theme') || 'light';
+
+// Theme functions
+function initializeTheme() {
+    console.log('Initializing theme...');
+    const themeToggle = document.getElementById('themeToggle');
+    const themeIcon = document.getElementById('themeIcon');
+    
+    console.log('Theme toggle element:', themeToggle);
+    console.log('Theme icon element:', themeIcon);
+    
+    // Set initial theme
+    setTheme(currentTheme);
+    
+    // Add event listener for theme toggle
+    if (themeToggle) {
+        // Remove any existing listeners
+        themeToggle.removeEventListener('click', themeToggleClickHandler);
+        
+        // Add new listener
+        themeToggle.addEventListener('click', themeToggleClickHandler);
+        console.log('Theme toggle event listener added');
+    } else {
+        console.error('Theme toggle button not found!');
+    }
+}
+
+// Theme toggle click handler
+function themeToggleClickHandler(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    console.log('Theme toggle clicked! Current theme:', currentTheme);
+    currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+    console.log('New theme:', currentTheme);
+    setTheme(currentTheme);
+    localStorage.setItem('theme', currentTheme);
+}
+
+function setTheme(theme) {
+    console.log('Setting theme to:', theme);
+    const themeIcon = document.getElementById('themeIcon');
+    
+    if (theme === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        if (themeIcon) {
+            themeIcon.textContent = '☀️';
+            themeIcon.setAttribute('aria-label', 'Switch to light mode');
+        }
+        console.log('Dark theme applied');
+    } else {
+        document.documentElement.setAttribute('data-theme', 'light');
+        if (themeIcon) {
+            themeIcon.textContent = '🌙';
+            themeIcon.setAttribute('aria-label', 'Switch to dark mode');
+        }
+        console.log('Light theme applied');
+    }
+}
+
 // Initialize WebSocket connection
 const socket = io();
 
@@ -507,10 +567,29 @@ if (journalSubmitBtn) {
 
 // Initialize when page loads
 window.onload = function() {
+    console.log('Page loaded, initializing...');
+    initializeTheme();
     initAudio();
     loadJournalHistory();
     
     // Hide results initially
     if (results) results.classList.add('hidden');
     if (loading) loading.classList.add('hidden');
-}; 
+};
+
+// Also initialize theme when DOM is ready (fallback)
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM Content Loaded');
+    // Apply theme immediately
+    setTheme(currentTheme);
+    
+    // Try to initialize theme again if not already done
+    setTimeout(() => {
+        const themeToggle = document.getElementById('themeToggle');
+        if (themeToggle && !themeToggle.hasAttribute('data-initialized')) {
+            console.log('Re-initializing theme...');
+            initializeTheme();
+            themeToggle.setAttribute('data-initialized', 'true');
+        }
+    }, 100);
+}); 

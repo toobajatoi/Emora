@@ -9,7 +9,8 @@ A modern, AI-powered mental health journaling application that provides real-tim
 - **Multi-Modal Input**: Text journaling and voice recording with live transcription
 - **Real-Time Processing**: WebSocket-based audio streaming with live spectrogram visualization
 - **Privacy-Focused**: Complete local storage - no data leaves the user's device
-- **Modern UI/UX**: Glassmorphism design with responsive, accessible interface
+- **Modern UI/UX**: Minimal professional design with responsive, accessible interface
+- **Dark/Light Mode**: Toggle between themes with persistent user preferences
 - **Audio Feature Extraction**: Advanced analysis of pitch, energy, and spectral characteristics
 
 ### 🎯 Core Functionality
@@ -21,7 +22,8 @@ A modern, AI-powered mental health journaling application that provides real-tim
 - **Responsive Design**: Works perfectly on desktop, tablet, and mobile
 
 ### 🎨 Modern Design
-- **Glassmorphism UI**: Beautiful frosted glass effects with backdrop blur
+- **Minimal Professional UI**: Clean, modern interface with subtle shadows and borders
+- **Dark/Light Theme Support**: Toggle between themes with smooth transitions
 - **Gradient Backgrounds**: Smooth color transitions throughout the interface
 - **Smooth Animations**: Elegant hover effects and transitions
 - **Professional Typography**: Clean, readable Inter font family
@@ -102,6 +104,12 @@ A modern, AI-powered mental health journaling application that provides real-tim
 - Click on any entry to view detailed information
 - Use the "🗑️ Delete All" button to clear your history
 
+### Theme Customization
+- Click the theme toggle button (🌙/☀️) in the top-right corner
+- Switch between light and dark modes
+- Your theme preference is automatically saved
+- Smooth transitions between themes
+
 ## 🏗️ Architecture
 
 ### Frontend
@@ -136,8 +144,9 @@ A modern, AI-powered mental health journaling application that provides real-tim
 
 ### Color Palette
 - **Primary Gradient**: `#667eea` to `#764ba2`
-- **Background**: Gradient with glassmorphism effects
-- **Text**: `#2d3748` (dark) and `#4a5568` (medium)
+- **Light Theme**: Clean whites and grays with subtle shadows
+- **Dark Theme**: Deep grays with enhanced contrast
+- **Text**: Adaptive colors for optimal readability in both themes
 - **Accents**: `#667eea` (blue) and `#f56565` (red)
 
 ### Typography
@@ -146,10 +155,11 @@ A modern, AI-powered mental health journaling application that provides real-tim
 - **Responsive**: Scales appropriately on all devices
 
 ### Components
-- **Cards**: Glassmorphism with backdrop blur
+- **Cards**: Clean backgrounds with subtle borders and shadows
 - **Buttons**: Gradient backgrounds with hover effects
 - **Forms**: Clean inputs with focus states
 - **Modals**: Centered overlays with smooth animations
+- **Theme Toggle**: Fixed position button with smooth transitions
 
 ## 🔒 Privacy & Security
 
@@ -222,7 +232,7 @@ For support or questions:
 - [ ] Integration with calendar apps
 - [ ] Voice emotion recognition improvements
 - [ ] Multi-language support
-- [ ] Dark mode toggle
+- [x] Dark/Light mode toggle
 - [ ] Journal entry templates
 - [ ] Social sharing (optional)
 
