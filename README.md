@@ -1,4 +1,4 @@
-# 🧠 Mental Health Journals
+# 🧠 Emora – AI Mental Health Journal
 
 A modern, AI-powered mental health journaling application that analyzes your emotional tone through text and voice recordings. Built with Flask, WebSocket, and advanced audio processing.
 
