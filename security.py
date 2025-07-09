@@ -5,7 +5,6 @@ Copyright © 2025 Tooba Jatoi. All rights reserved.
 """
 
 import re
-import magic
 import hashlib
 import tempfile
 import os
@@ -77,13 +76,20 @@ class SecurityValidator:
         if len(file_data) == 0:
             return False, "Empty file not allowed", None
         
-        # Use python-magic to detect file type
-        try:
-            mime_type = magic.from_buffer(file_data, mime=True)
-            logger.info(f"Detected MIME type: {mime_type}")
-        except Exception as e:
-            logger.warning(f"Could not detect MIME type: {e}")
-            mime_type = None
+        # Simple file type detection based on file headers
+        mime_type = None
+        if len(file_data) >= 4:
+            # Check for common audio file signatures
+            if file_data[:4] == b'RIFF' and file_data[8:12] == b'WAVE':
+                mime_type = 'audio/wav'
+            elif file_data[:3] == b'ID3' or file_data[:2] == b'\xff\xfb':
+                mime_type = 'audio/mpeg'
+            elif file_data[:4] == b'\x1a\x45\xdf\xa3':
+                mime_type = 'video/webm'  # WebM container
+            elif file_data[:4] == b'OggS':
+                mime_type = 'audio/ogg'
+        
+        logger.info(f"Detected MIME type: {mime_type}")
         
         # Map MIME types to extensions
         mime_to_ext = {
