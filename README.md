@@ -1,8 +1,16 @@
-# 🧠 Emora – AI Mental Health Journal
+# Emora - AI Mental Health Journal
 
-A modern, AI-powered mental health journaling application that analyzes your emotional tone through text and voice recordings. Built with Flask, WebSocket, and advanced audio processing.
+A modern, AI-powered mental health journaling application that provides real-time emotional analysis through text and voice recordings. Built with privacy-first design, all data remains local to ensure user confidentiality.
 
-## ✨ Features
+## ✨ Key Features
+
+### 🎯 Core Functionality
+- **AI-Powered Analysis**: Real-time emotion detection using machine learning models
+- **Multi-Modal Input**: Text journaling and voice recording with live transcription
+- **Real-Time Processing**: WebSocket-based audio streaming with live spectrogram visualization
+- **Privacy-Focused**: Complete local storage - no data leaves the user's device
+- **Modern UI/UX**: Glassmorphism design with responsive, accessible interface
+- **Audio Feature Extraction**: Advanced analysis of pitch, energy, and spectral characteristics
 
 ### 🎯 Core Functionality
 - **Text Journaling**: Write about your day and get emotional analysis
@@ -26,6 +34,13 @@ A modern, AI-powered mental health journaling application that analyzes your emo
 - **Local Storage**: All data stays on your device for privacy
 - **Cross-platform**: Works on all modern browsers
 
+## 🛠️ Technical Stack
+
+**Backend**: Python, Flask, Flask-SocketIO, Whisper (OpenAI), Librosa, NumPy  
+**Frontend**: HTML5, CSS3 (Glassmorphism), JavaScript (ES6+), Web Audio API  
+**AI/ML**: Custom mood classification models, audio feature extraction  
+**Architecture**: Real-time WebSocket communication, RESTful APIs  
+
 ## 🚀 Getting Started
 
 ### Prerequisites
@@ -37,8 +52,8 @@ A modern, AI-powered mental health journaling application that analyzes your emo
 
 1. **Clone the repository**
    ```bash
-   git clone <repository-url>
-   cd sarcasm-detect
+   git clone https://github.com/toobajatoi/Emora.git
+   cd Emora
    ```
 
 2. **Create a virtual environment**
@@ -106,7 +121,7 @@ A modern, AI-powered mental health journaling application that analyzes your emo
 ```
 ├── app.py                 # Main Flask application
 ├── feature_extractor.py   # Audio feature extraction
-├── sarcasm_classifier.py  # Mood detection logic
+├── mood_classifier.py     # Mood detection logic
 ├── templates/
 │   ├── index.html        # Main journal interface
 │   └── dashboard.html    # Real-time dashboard
@@ -147,11 +162,11 @@ A modern, AI-powered mental health journaling application that analyzes your emo
 
 ### Project Structure
 ```
-sarcasm-detect/
+Emora/
 ├── app.py                 # Main application
 ├── audio_capture.py       # Audio capture utilities
 ├── feature_extractor.py   # Audio feature extraction
-├── sarcasm_classifier.py  # Mood classification
+├── mood_classifier.py     # Mood classification
 ├── models/               # AI model storage
 ├── static/               # Static assets
 │   ├── css/
@@ -176,9 +191,13 @@ Run the test suite:
 python -m pytest tests/
 ```
 
+## 🎯 Impact
+
+Provides users with an intuitive, AI-enhanced journaling experience that combines the therapeutic benefits of self-reflection with intelligent emotional analysis, all while maintaining complete privacy and data security.
+
 ## 📄 License
 
-Created by Tooba Jatoi
+Created by Tooba Jatoi  
 Copyright © 2025 Tooba Jatoi. All rights reserved.
 
 ## 🤝 Contributing
