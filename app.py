@@ -392,4 +392,6 @@ def journal_entry():
 
 if __name__ == '__main__':
     logger.info("Starting server...")
-    socketio.run(app, host='0.0.0.0', port=5001, debug=False, use_reloader=False) 
+    # Use environment variable for port (Render requirement)
+    port = int(os.environ.get('PORT', 5001))
+    socketio.run(app, host='0.0.0.0', port=port, debug=False, use_reloader=False) 
