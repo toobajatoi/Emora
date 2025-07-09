@@ -1,0 +1,7 @@
+﻿models/*.pt
+models/*.bin
+models/*.safetensors
+venv/
+__pycache__/
+*.pyc
+.env

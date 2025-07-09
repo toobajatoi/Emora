@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mental Health Journal - Your Personal Wellness Companion</title>
+    <meta name="description" content="Record your thoughts by voice or text. Get instant, empathetic feedback and track your emotional journey.">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <!-- Remove CDN socket.io -->
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script> -->
+    <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+    <div class="main-wrapper">
+        <div class="container">
+            <!-- Header -->
+            <header class="header">
+                <h1 class="main-title">🧠 Mental Health Journal</h1>
+                <p class="subtitle">Record your thoughts by voice or text. Get instant, empathetic feedback and track your emotional journey.</p>
+            </header>
+
+            <!-- Journal Entry Card -->
+            <section class="card" id="journal-entry-card">
+                <h2 class="sr-only">Journal Entry</h2>
+                <form class="journal-form" onsubmit="return false;" aria-label="Journal entry form">
+                    <div class="form-group">
+                        <label for="journalText" class="form-label">Write about your day (or record below):</label>
+                        <textarea 
+                            id="journalText" 
+                            class="form-textarea" 
+                            placeholder="How was your day? Share your thoughts, feelings, or anything on your mind..."
+                            aria-describedby="journalHelp"
+                            rows="5"
+                        ></textarea>
+                        <div id="journalHelp" class="sr-only">Type your journal entry here or use the voice recording feature below</div>
+                    </div>
+                    <button id="journalSubmit" class="btn btn-primary" type="button">
+                        <span>Submit Journal</span>
+                    </button>
+                </form>
+                
+                <div class="audio-section">
+                    <h3 class="sr-only">Voice Recording</h3>
+                    <div class="spectrogram-container">
+                        <canvas id="spectrogram" class="spectrogram" aria-label="Audio visualization"></canvas>
+                    </div>
+                    <div class="recording-controls">
+                        <button id="startRecording" class="btn btn-secondary" type="button" aria-label="Start voice recording">
+                            <span>🎤 Start Recording</span>
+                        </button>
+                        <button id="stopRecording" class="btn btn-secondary" type="button" style="display:none;" aria-label="Stop voice recording">
+                            <span>⏹️ Stop Recording</span>
+                        </button>
+                    </div>
+                    <div id="recordingStatus" class="recording-status" aria-live="polite"></div>
+                </div>
+            </section>
+
+            <!-- Results Card (hidden by default) -->
+            <section class="card hidden" id="results" aria-label="Analysis results">
+                <div class="results-header">
+                    <span id="moodEmoji" class="mood-emoji" aria-label="Mood emoji"></span>
+                    <span id="moodLabel" class="mood-label"></span>
+                    <div id="moodMessage" class="mood-message"></div>
+                </div>
+                <div class="results-content">
+                    <div class="result-item">
+                        <div class="result-title">Summary</div>
+                        <div id="journalSummary" class="result-text"></div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-title">Transcription</div>
+                        <div id="journalTranscription" class="result-text transcription"></div>
+                    </div>
+                    <div class="features-grid">
+                        <div class="feature-card">
+                            <div class="feature-title">Pitch</div>
+                            <div id="pitchValue" class="feature-value">0.00</div>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-title">Energy</div>
+                            <div id="energyValue" class="feature-value">0.00</div>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-title">Zero Crossing Rate</div>
+                            <div id="zero_crossing_rateValue" class="feature-value">0.00</div>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-title">Spectral Centroid</div>
+                            <div id="spectral_centroidValue" class="feature-value">0.00</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Loading Animation (hidden by default) -->
+            <section class="card hidden" id="loading" aria-label="Loading analysis">
+                <div class="loading-animation">
+                    <div class="spinner" aria-label="Loading spinner"></div>
+                    <div class="loading-text">Analyzing your journal entry...</div>
+                </div>
+            </section>
+
+            <!-- Journal History Card -->
+            <section class="card">
+                <div class="history-header">
+                    <h2 class="history-title">Your Journal History</h2>
+                    <button 
+                        onclick="localStorage.removeItem('journalEntries'); loadJournalHistory();" 
+                        class="btn btn-danger btn-small"
+                        aria-label="Delete all journal entries"
+                    >
+                        🗑️ Delete All Journals
+                    </button>
+                </div>
+                <div class="privacy-notice">
+                    <p>🔒 Your journals are stored <b>only in your browser</b> and never leave your device.</p>
+                </div>
+                <div id="journalHistory" class="journal-history" aria-label="Journal entries list"></div>
+            </section>
+        </div>
+    </div>
+
+    <!-- Journal Detail Modal -->
+    <div id="journalModal" class="modal" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
+        <div class="modal-content modal-glass">
+            <button class="modal-close" onclick="closeJournalModal()" aria-label="Close modal">&times;</button>
+            <div class="modal-header">
+                <span id="modalEmoji" class="modal-emoji" aria-label="Mood emoji"></span>
+                <span id="modalMood" class="modal-mood"></span>
+            </div>
+            <div id="modalDate" class="modal-date"></div>
+            <div class="modal-body">
+                <div class="modal-section">
+                    <div class="modal-section-title">From Us to You:</div>
+                    <div id="modalMessage" class="modal-message modal-glass-section"></div>
+                </div>
+                <div class="modal-section">
+                    <div class="modal-section-title">Your Journal</div>
+                    <div id="modalSummary" class="modal-summary modal-glass-section"></div>
+                </div>
+                <div class="modal-section">
+                    <div class="modal-section-title">Transcription</div>
+                    <div id="modalTranscription" class="modal-transcription modal-glass-section"></div>
+                </div>
+                <div class="modal-section">
+                    <div class="modal-section-title">Features</div>
+                    <div id="modalFeatures" class="modal-features modal-glass-section"></div>
+                </div>
+            </div>
+            <div id="modalNav" class="modal-nav"></div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <p>Created with ❤️ by Tooba Jatoi</p>
+            <p>&copy; 2025 Tooba Jatoi. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Screen reader only content -->
+    <style>
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+    </style>
+
+    <script src="{{ url_for('static', filename='js/socket.io.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html> 
