@@ -224,25 +224,83 @@ function drawSpectrogram() {
     const dataArray = new Uint8Array(bufferLength);
     analyser.getByteFrequencyData(dataArray);
 
-    // Shift canvas left by 2px
-    const imageData = spectrogramCtx.getImageData(2, 0, width - 2, height);
-    spectrogramCtx.clearRect(0, 0, width, height);
-    spectrogramCtx.putImageData(imageData, 0, 0);
+    // Clear canvas with gradient background
+    const gradient = spectrogramCtx.createLinearGradient(0, 0, 0, height);
+    gradient.addColorStop(0, 'rgba(102, 126, 234, 0.1)');
+    gradient.addColorStop(1, 'rgba(118, 75, 162, 0.1)');
+    spectrogramCtx.fillStyle = gradient;
+    spectrogramCtx.fillRect(0, 0, width, height);
 
-    // Draw new frequency column at the right
-    for (let y = 0; y < height; y++) {
-        const freqIdx = Math.floor((y / height) * bufferLength);
-        const value = dataArray[freqIdx];
+    // Draw grid lines
+    spectrogramCtx.strokeStyle = 'rgba(102, 126, 234, 0.1)';
+    spectrogramCtx.lineWidth = 0.5;
+    
+    // Horizontal grid lines
+    for (let i = 1; i < 4; i++) {
+        const y = (height / 4) * i;
+        spectrogramCtx.beginPath();
+        spectrogramCtx.moveTo(0, y);
+        spectrogramCtx.lineTo(width, y);
+        spectrogramCtx.stroke();
+    }
+    
+    // Center line (stronger)
+    spectrogramCtx.strokeStyle = 'rgba(102, 126, 234, 0.3)';
+    spectrogramCtx.lineWidth = 1;
+    spectrogramCtx.beginPath();
+    spectrogramCtx.moveTo(0, height / 2);
+    spectrogramCtx.lineTo(width, height / 2);
+    spectrogramCtx.stroke();
+
+    // Draw frequency bars (waveform style)
+    const barWidth = Math.max(1, width / bufferLength);
+    const centerY = height / 2;
+    const time = Date.now() * 0.001; // For subtle animation
+    
+    for (let i = 0; i < bufferLength; i++) {
+        const value = dataArray[i];
         const intensity = value / 255;
         
-        // Create gradient from blue to purple
-        const r = Math.floor(102 + intensity * 50);
-        const g = Math.floor(126 + intensity * 30);
-        const b = Math.floor(234 + intensity * 20);
+        // Add subtle animation based on time and position
+        const animationOffset = Math.sin(time * 2 + i * 0.1) * 0.1;
+        const animatedIntensity = Math.max(0, intensity + animationOffset);
         
-        spectrogramCtx.fillStyle = `rgba(${r}, ${g}, ${b}, ${0.6 + intensity * 0.4})`;
-        spectrogramCtx.fillRect(width - 2, height - y, 2, 1);
+        // Calculate bar height based on frequency
+        const barHeight = animatedIntensity * (height / 2) * 0.8;
+        
+        // Create gradient for each bar
+        const barGradient = spectrogramCtx.createLinearGradient(0, centerY - barHeight, 0, centerY + barHeight);
+        barGradient.addColorStop(0, `rgba(102, 126, 234, ${0.3 + animatedIntensity * 0.7})`);
+        barGradient.addColorStop(0.5, `rgba(118, 75, 162, ${0.5 + animatedIntensity * 0.5})`);
+        barGradient.addColorStop(1, `rgba(102, 126, 234, ${0.3 + animatedIntensity * 0.7})`);
+        
+        spectrogramCtx.fillStyle = barGradient;
+        
+        // Draw top bar with rounded corners effect
+        const x = i * barWidth;
+        const topY = centerY - barHeight;
+        
+        // Draw top bar
+        spectrogramCtx.fillRect(x, topY, barWidth - 1, barHeight);
+        
+        // Draw bottom bar (mirror)
+        spectrogramCtx.fillRect(x, centerY, barWidth - 1, barHeight);
+        
+        // Add subtle highlight at the top of each bar
+        if (barHeight > 5) {
+            const highlightGradient = spectrogramCtx.createLinearGradient(0, topY, 0, topY + 3);
+            highlightGradient.addColorStop(0, `rgba(255, 255, 255, ${0.3 * animatedIntensity})`);
+            highlightGradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+            spectrogramCtx.fillStyle = highlightGradient;
+            spectrogramCtx.fillRect(x, topY, barWidth - 1, 3);
+        }
     }
+    
+    // Add subtle glow effect
+    spectrogramCtx.shadowColor = 'rgba(102, 126, 234, 0.3)';
+    spectrogramCtx.shadowBlur = 10;
+    spectrogramCtx.shadowOffsetX = 0;
+    spectrogramCtx.shadowOffsetY = 0;
     
     spectrogramAnimationId = requestAnimationFrame(drawSpectrogram);
 }
@@ -283,7 +341,7 @@ if (startBtn && stopBtn) {
             
         startBtn.style.display = 'none';
             stopBtn.style.display = 'inline-flex';
-            statusDiv.textContent = 'Recording... Click stop when done.';
+            statusDiv.innerHTML = '<div class="recording-indicator"></div>Recording... Click stop when done.';
             statusDiv.style.color = '#e53e3e';
             startSpectrogram();
             

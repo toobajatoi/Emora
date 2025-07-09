@@ -46,9 +46,19 @@
                 
                 <div class="audio-section">
                     <h3 class="sr-only">Voice Recording</h3>
-                    <div class="spectrogram-container">
-                        <canvas id="spectrogram" class="spectrogram" aria-label="Audio visualization"></canvas>
+                                    <div class="spectrogram-container">
+                    <canvas id="spectrogram" class="spectrogram" aria-label="Audio visualization">
+                        <div class="spectrogram-label">Audio Spectrum</div>
+                    </canvas>
+                    <div class="spectrogram-label">Audio Spectrum</div>
+                    <div class="spectrogram-frequency-labels">
+                        <span>8kHz</span>
+                        <span>4kHz</span>
+                        <span>2kHz</span>
+                        <span>1kHz</span>
+                        <span>500Hz</span>
                     </div>
+                </div>
                     <div class="recording-controls">
                         <button id="startRecording" class="btn btn-secondary" type="button" aria-label="Start voice recording">
                             <span>🎤 Start Recording</span>
