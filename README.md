@@ -2,7 +2,7 @@
 
 A modern, AI-powered mental health journaling application that provides real-time emotional analysis through text and voice recordings. Built with privacy-first design, all data remains local to ensure user confidentiality.
 
-## ✨ Key Features
+## ✨ Features
 
 ### 🎯 Core Functionality
 - **AI-Powered Analysis**: Real-time emotion detection using machine learning models
@@ -13,15 +13,7 @@ A modern, AI-powered mental health journaling application that provides real-tim
 - **Dark/Light Mode**: Toggle between themes with persistent user preferences
 - **Audio Feature Extraction**: Advanced analysis of pitch, energy, and spectral characteristics
 
-### 🎯 Core Functionality
-- **Text Journaling**: Write about your day and get emotional analysis
-- **Voice Recording**: Record your voice and get real-time transcription and mood detection
-- **Emotional Analysis**: AI-powered mood detection with supportive messages
-- **Audio Visualization**: Real-time spectrogram display during recording
-- **Journal History**: Secure local storage of all your entries
-- **Responsive Design**: Works perfectly on desktop, tablet, and mobile
-
-### 🎨 Modern Design
+### 🎨 Design Features
 - **Minimal Professional UI**: Clean, modern interface with subtle shadows and borders
 - **Dark/Light Theme Support**: Toggle between themes with smooth transitions
 - **Gradient Backgrounds**: Smooth color transitions throughout the interface
@@ -29,17 +21,73 @@ A modern, AI-powered mental health journaling application that provides real-tim
 - **Professional Typography**: Clean, readable Inter font family
 - **Accessibility**: Proper focus states and keyboard navigation
 
-### 🔧 Technical Features
-- **Real-time Processing**: WebSocket-based audio streaming
-- **Audio Feature Extraction**: Pitch, energy, zero crossing rate, spectral centroid
-- **Whisper Integration**: OpenAI's Whisper for accurate speech-to-text
-- **Local Storage**: All data stays on your device for privacy
-- **Cross-platform**: Works on all modern browsers
+## 🏗️ How It Works
+
+### Architecture Overview
+
+Emora uses a **client-server architecture** with real-time communication capabilities:
+
+```
+┌─────────────────┐    WebSocket    ┌─────────────────┐
+│   Frontend      │ ◄─────────────► │    Backend      │
+│   (Browser)     │                 │   (Flask)       │
+└─────────────────┘                 └─────────────────┘
+         │                                    │
+         │                                    │
+         ▼                                    ▼
+┌─────────────────┐                 ┌─────────────────┐
+│  Local Storage  │                 │   AI Models     │
+│  (Journal Data) │                 │  (Whisper/ML)   │
+└─────────────────┘                 └─────────────────┘
+```
+
+### Data Flow
+
+#### Text Journal Processing:
+1. **User Input**: User types journal entry in text area
+2. **Frontend**: Sends text via HTTP POST to `/journal` endpoint
+3. **Backend**: Processes text through mood classification model
+4. **Analysis**: Extracts emotional features and generates response
+5. **Response**: Returns analysis results to frontend
+6. **Storage**: Results saved to browser's localStorage
+
+#### Voice Journal Processing:
+1. **Audio Capture**: Browser captures audio via Web Audio API
+2. **Real-time Visualization**: Live spectrogram display during recording
+3. **Audio Processing**: Converts WebM/Opus to WAV format
+4. **Speech-to-Text**: OpenAI Whisper transcribes audio to text
+5. **Feature Extraction**: Librosa extracts audio features (pitch, energy, etc.)
+6. **Mood Analysis**: Combined text and audio features analyzed
+7. **Results**: Comprehensive analysis returned to frontend
+
+### Technical Components
+
+#### Frontend (Client-Side)
+- **HTML5**: Semantic markup with modern structure
+- **CSS3**: Theme-aware styling with CSS variables
+- **JavaScript**: Real-time audio processing and WebSocket communication
+- **Web Audio API**: Real-time spectrogram visualization
+- **localStorage**: Secure local data storage
+
+#### Backend (Server-Side)
+- **Flask**: Lightweight web framework for HTTP endpoints
+- **Flask-SocketIO**: Real-time WebSocket communication
+- **Whisper**: OpenAI's speech-to-text model for transcription
+- **Librosa**: Audio feature extraction (pitch, energy, spectral centroid)
+- **NumPy**: Numerical computations and data processing
+- **Custom ML Models**: Mood classification algorithms
+
+### Security & Privacy
+
+- **Local Storage**: All journal entries stored in user's browser
+- **No Server Persistence**: Data never saved on server
+- **HTTPS Ready**: Configured for secure connections
+- **Minimal Permissions**: Microphone access only when needed
 
 ## 🛠️ Technical Stack
 
 **Backend**: Python, Flask, Flask-SocketIO, Whisper (OpenAI), Librosa, NumPy  
-**Frontend**: HTML5, CSS3 (Glassmorphism), JavaScript (ES6+), Web Audio API  
+**Frontend**: HTML5, CSS3, JavaScript (ES6+), Web Audio API  
 **AI/ML**: Custom mood classification models, audio feature extraction  
 **Architecture**: Real-time WebSocket communication, RESTful APIs  
 
@@ -110,34 +158,26 @@ A modern, AI-powered mental health journaling application that provides real-tim
 - Your theme preference is automatically saved
 - Smooth transitions between themes
 
-## 🏗️ Architecture
+## 🏗️ Project Structure
 
-### Frontend
-- **HTML5**: Semantic markup with modern structure
-- **CSS3**: Custom glassmorphism design with responsive grid
-- **JavaScript**: Real-time audio processing and WebSocket communication
-- **Web Audio API**: Real-time spectrogram visualization
-
-### Backend
-- **Flask**: Lightweight web framework
-- **Flask-SocketIO**: Real-time WebSocket communication
-- **Whisper**: OpenAI's speech-to-text model
-- **Librosa**: Audio feature extraction
-- **NumPy**: Numerical computations
-
-### Key Components
 ```
-├── app.py                 # Main Flask application
-├── feature_extractor.py   # Audio feature extraction
-├── mood_classifier.py     # Mood detection logic
-├── templates/
+Emora/
+├── app.py                 # Main Flask application & WebSocket server
+├── feature_extractor.py   # Audio feature extraction utilities
+├── mood_classifier.py     # Mood detection and classification logic
+├── models/               # AI model storage (Whisper, custom models)
+├── static/               # Static assets
+│   ├── css/
+│   │   └── style.css     # Theme-aware CSS with variables
+│   └── js/
+│       ├── app.js        # Main application logic & theme management
+│       ├── dashboard.js  # Real-time dashboard functionality
+│       └── socket.io.js  # WebSocket client library
+├── templates/            # HTML templates
 │   ├── index.html        # Main journal interface
 │   └── dashboard.html    # Real-time dashboard
-├── static/
-│   ├── css/style.css     # Modern glassmorphism styles
-│   └── js/
-│       ├── app.js        # Main application logic
-│       └── dashboard.js  # Dashboard functionality
+├── requirements.txt      # Python dependencies
+└── README.md            # This file
 ```
 
 ## 🎨 Design System
@@ -169,23 +209,6 @@ A modern, AI-powered mental health journaling application that provides real-tim
 - **Microphone Permissions**: Only requested when needed
 
 ## 🛠️ Development
-
-### Project Structure
-```
-Emora/
-├── app.py                 # Main application
-├── audio_capture.py       # Audio capture utilities
-├── feature_extractor.py   # Audio feature extraction
-├── mood_classifier.py     # Mood classification
-├── models/               # AI model storage
-├── static/               # Static assets
-│   ├── css/
-│   └── js/
-├── templates/            # HTML templates
-├── tests/               # Test files
-├── requirements.txt     # Python dependencies
-└── README.md           # This file
-```
 
 ### Adding New Features
 1. **Frontend**: Add HTML structure in templates
