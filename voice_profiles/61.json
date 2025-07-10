@@ -1,0 +1,20 @@
+{
+  "user_id": "61",
+  "passphrase": "my name is Tuba",
+  "features": {
+    "pitch_mean": 1020.6570434570312,
+    "pitch_std": 930.194091796875,
+    "pitch_range": 3793.09375,
+    "spectral_centroid_mean": 1611.327616246563,
+    "spectral_centroid_std": 996.3838253270515,
+    "mfcc_mean": -22.479217529296875,
+    "mfcc_std": 111.26809692382812,
+    "energy_mean": 0.05088760331273079,
+    "energy_std": 0.06271933764219284,
+    "zcr_mean": 0.10457356770833333,
+    "zcr_std": 0.0945582341684996,
+    "rolloff_mean": 2802.6258680555557,
+    "rolloff_std": 1551.7752557601368
+  },
+  "created_at": "2025-07-10T01:29:48"
+}

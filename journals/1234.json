@@ -81,5 +81,19 @@
       "emotion": "neutral"
     },
     "timestamp": "2025-07-09T23:41:33"
+  },
+  {
+    "text": " \u0646\u0645\u0628\u0631 \u0627\u0103m\u0627\u0631 \u0627\u0648\u0679",
+    "mood": "angry",
+    "emoji": "\ud83d\ude20",
+    "message": "I can sense the intensity of your emotions, and I want you to know that your anger is completely valid. Anger often serves as a protective emotion - it's your mind's way of saying that something isn't right or that you deserve better.\n\nYour anger is telling you something important. It might be signaling that boundaries need to be set, that something needs to change, or that you're feeling hurt or disappointed.\n\nTry taking a few deep breaths - inhale for 4 counts, hold for 4, exhale for 6. This can help you find some space to process what's beneath the anger.\n\nRemember that anger can be a powerful force for positive transformation when we learn to channel it constructively. What might your anger be trying to protect you from or motivate you toward?",
+    "features": {
+      "pitch": 267.4127197265625,
+      "energy": 0.16024518013000488,
+      "zero_crossing_rate": 0.05726720556358381,
+      "spectral_centroid": 923.0385934522902,
+      "emotion": "neutral"
+    },
+    "timestamp": "2025-07-10T01:24:50"
   }
 ]

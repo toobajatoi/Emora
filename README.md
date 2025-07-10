@@ -1,5 +1,22 @@
 # Emora - AI Mental Health Journal
 
+---
+
+### 🚀 Latest Features & Improvements (2025)
+
+- **Per-User Journal Storage:** Each user’s journal entries are securely stored and only accessible to them.
+- **User Registration with Name:** Users provide their name at registration; personalized greetings throughout the app.
+- **Backend Journal History:** Journal entries are now stored on the backend (not just in the browser), so users can access their history from any device after login.
+- **Delete All Journals:** Users can delete all their journal entries with a single click.
+- **Voice & Password Login:** Secure authentication via password or voice. Voice login uses a passphrase and voice biometrics for robust security.
+- **Voice Authentication:** Users enroll by recording a passphrase. Login requires both matching the passphrase (even with minor variations) and matching the user's voiceprint.
+- **Improved Session Security:** Reliable login/logout, no more session loss or infinite redirect loops.
+- **Detailed Journal Modals:** Click any journal entry to see your original text, AI analysis, transcription, and features.
+- **Modern, Accessible UI:** Clean design, dark/light mode, and mobile-friendly.
+- **Bug Fixes & UX Improvements:** Fixed history display, modal details, and error handling.
+
+---
+
 A modern, AI-powered mental health journaling application that provides real-time emotional analysis through text and voice recordings. Built with privacy-first design, all data remains local to ensure user confidentiality.
 
 ## ✨ Features

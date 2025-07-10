@@ -3,6 +3,26 @@ Login Page Styles for Emora
 Created by Tooba Jatoi
 */
 
+[data-theme="dark"] {
+    --bg-primary: #121212;
+    --bg-secondary: #23272f;
+    --card-bg: #1e222a;
+    --text-primary: #f8f8fa;
+    --text-secondary: #bfc7d5;
+    --text-muted: #7a869a;
+    --border-color: #2c313a;
+    --border-hover: #4a90e2;
+    --shadow-light: 0 4px 6px -1px rgba(0,0,0,0.7), 0 2px 4px -1px rgba(0,0,0,0.6);
+    --shadow-medium: 0 10px 25px -3px rgba(0,0,0,0.8), 0 4px 6px -2px rgba(0,0,0,0.7);
+    --shadow-heavy: 0 20px 25px -5px rgba(0,0,0,0.9), 0 10px 10px -5px rgba(0,0,0,0.8);
+    --accent-primary: #7f9cf5;
+    --accent-secondary: #a78bfa;
+    --success-color: #48bb78;
+    --error-color: #f56565;
+    --info-color: #4299e1;
+    --warning-color: #ed8936;
+}
+
 /* Login Layout */
 .login-wrapper {
     min-height: 100vh;
@@ -384,4 +404,38 @@ Created by Tooba Jatoi
     100% {
         box-shadow: 0 0 30px rgba(102, 126, 234, 0.5);
     }
+} 
+
+[data-theme="dark"] .login-card {
+    background: var(--card-bg) !important;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-medium);
+} 
+
+[data-theme="dark"] .login-tabs {
+    background: var(--card-bg) !important;
+    border-bottom: 2px solid var(--border-color) !important;
+}
+[data-theme="dark"] .login-tab {
+    background: var(--bg-secondary) !important;
+    color: var(--text-secondary) !important;
+    border: none !important;
+}
+[data-theme="dark"] .login-tab.active {
+    background: var(--accent-primary) !important;
+    color: #fff !important;
+    box-shadow: var(--shadow-light);
+}
+[data-theme="dark"] .btn,
+[data-theme="dark"] .btn-primary {
+    background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%) !important;
+    color: #fff !important;
+    border: none;
+    box-shadow: var(--shadow-light);
+}
+[data-theme="dark"] .btn-secondary {
+    background: var(--bg-secondary) !important;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--border-color);
 } 
