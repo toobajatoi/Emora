@@ -1,0 +1,20 @@
+{
+  "user_id": "78",
+  "passphrase": "water",
+  "features": {
+    "pitch_mean": 679.6432495117188,
+    "pitch_std": 619.9038696289062,
+    "pitch_range": 2805.995849609375,
+    "spectral_centroid_mean": 1181.5476434379493,
+    "spectral_centroid_std": 174.54215879699268,
+    "mfcc_mean": -24.680450439453125,
+    "mfcc_std": 116.10040283203125,
+    "energy_mean": 0.062417421489953995,
+    "energy_std": 0.11525066196918488,
+    "zcr_mean": 0.06505347079918032,
+    "zcr_std": 0.013422426543447979,
+    "rolloff_mean": 2242.059426229508,
+    "rolloff_std": 463.5199430784323
+  },
+  "created_at": "2025-07-09T19:54:44"
+}

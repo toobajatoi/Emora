@@ -49,7 +49,7 @@ class Config:
     MAX_AUDIO_DURATION = 300  # 5 minutes max
     
     # CORS settings
-    CORS_ORIGINS = os.environ.get('CORS_ORIGINS', 'http://localhost:5001,http://127.0.0.1:5001').split(',')
+    CORS_ORIGINS = os.environ.get('CORS_ORIGINS', 'http://localhost:5001,http://127.0.0.1:5001,http://192.168.18.10:5001').split(',')
     
     # Input validation
     MAX_TEXT_LENGTH = 10000  # 10KB max text input
@@ -80,7 +80,7 @@ class DevelopmentConfig(Config):
     """Development configuration with relaxed security for local development"""
     DEBUG = True
     SESSION_COOKIE_SECURE = False
-    CORS_ORIGINS = ['http://localhost:5001', 'http://127.0.0.1:5001']
+    CORS_ORIGINS = ['http://localhost:5001', 'http://127.0.0.1:5001', 'http://192.168.18.10:5001']
 
 class ProductionConfig(Config):
     """Production configuration with strict security"""

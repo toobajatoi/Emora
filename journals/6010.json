@@ -1,0 +1,83 @@
+[
+  {
+    "text": " Everything around me is just so depressing.",
+    "mood": "angry",
+    "emoji": "\ud83d\ude20",
+    "message": "I can sense the intensity of your emotions, and I want you to know that your anger is completely valid. Anger often serves as a protective emotion - it's your mind's way of saying that something isn't right or that you deserve better.\n\nYour anger is telling you something important. It might be signaling that boundaries need to be set, that something needs to change, or that you're feeling hurt or disappointed.\n\nTry taking a few deep breaths - inhale for 4 counts, hold for 4, exhale for 6. This can help you find some space to process what's beneath the anger.\n\nRemember that anger can be a powerful force for positive transformation when we learn to channel it constructively. What might your anger be trying to protect you from or motivate you toward?",
+    "features": {
+      "pitch": 286.073974609375,
+      "energy": 0.08999252319335938,
+      "zero_crossing_rate": 0.12414438790137615,
+      "spectral_centroid": 1517.0722036265454,
+      "emotion": "neutral"
+    },
+    "timestamp": "2025-07-09T23:44:39"
+  },
+  {
+    "text": " Yeah, I'm so happy.",
+    "mood": "excited",
+    "emoji": "\ud83e\udd29",
+    "message": "Your enthusiasm is absolutely infectious! That spark of excitement you're feeling is precious - it's your passion and energy coming through in every word.\n\nWhen we're excited about something, it often means we're on the right path or that we've found something that truly matters to us. This kind of genuine enthusiasm is rare and valuable.\n\nYour excitement shows that you're engaged with life and open to possibilities. This feeling often leads to our most creative and productive moments.\n\nKeep that energy flowing! Your excitement is a beautiful thing, and it's inspiring to hear someone so genuinely passionate about what they're experiencing.",
+    "features": {
+      "pitch": 253.55601501464844,
+      "energy": 0.09643703699111938,
+      "zero_crossing_rate": 0.09678451624293785,
+      "spectral_centroid": 1361.297926632547,
+      "emotion": "neutral"
+    },
+    "timestamp": "2025-07-09T23:44:49"
+  },
+  {
+    "text": "heyyy",
+    "mood": "calm",
+    "emoji": "\ud83d\ude42",
+    "message": "There's such a peaceful, centered quality to your voice. You sound grounded and at ease, which is a beautiful state to be in. This inner calm you're experiencing is precious and worth protecting.\n\nThis peaceful state allows for deeper reflection, clearer thinking, and more meaningful connections with others. It's often when we're most open to insights and new perspectives.\n\nYour calmness is truly grounding and speaks to your inner strength and emotional maturity. This balanced state is the foundation for wisdom and authentic connection.\n\nCherish this centered feeling - it's a sign that you're doing well and that you've found a good balance in your life.",
+    "features": {
+      "pitch": 0,
+      "energy": 0,
+      "zero_crossing_rate": 0,
+      "spectral_centroid": 0
+    },
+    "timestamp": "2025-07-10T00:31:04"
+  },
+  {
+    "text": " I wish I could tell you how I felt but it was just for discussing.",
+    "mood": "melancholy",
+    "emoji": "\ud83d\ude14",
+    "message": "There's a thoughtful, reflective quality to your voice that speaks to your depth and sensitivity. This contemplative sadness you're experiencing might actually be preparing you for something meaningful.\n\nSometimes the most beautiful insights and growth come from these quieter, more reflective moments. Your ability to sit with these feelings shows emotional maturity and wisdom.\n\nConsider what this melancholy might be trying to teach you. Perhaps it's a sign that you need to slow down, reflect, or make some changes in your life. Trust that this feeling has purpose and meaning.\n\nHonor this space you're in - it's part of your journey, and it's making you stronger and more compassionate.",
+    "features": {
+      "pitch": 263.5382995605469,
+      "energy": 0.013466302305459976,
+      "zero_crossing_rate": 0.08931955144135188,
+      "spectral_centroid": 1234.2221893426145,
+      "emotion": "neutral"
+    },
+    "timestamp": "2025-07-10T00:32:03"
+  },
+  {
+    "text": "hiiii",
+    "mood": "calm",
+    "emoji": "\ud83d\ude42",
+    "message": "There's such a peaceful, centered quality to your voice. You sound grounded and at ease, which is a beautiful state to be in. This inner calm you're experiencing is precious and worth protecting.\n\nThis peaceful state allows for deeper reflection, clearer thinking, and more meaningful connections with others. It's often when we're most open to insights and new perspectives.\n\nYour calmness is truly grounding and speaks to your inner strength and emotional maturity. This balanced state is the foundation for wisdom and authentic connection.\n\nCherish this centered feeling - it's a sign that you're doing well and that you've found a good balance in your life.",
+    "features": {
+      "pitch": 0,
+      "energy": 0,
+      "zero_crossing_rate": 0,
+      "spectral_centroid": 0
+    },
+    "timestamp": "2025-07-10T00:44:21"
+  },
+  {
+    "text": "i love you sooo",
+    "mood": "calm",
+    "emoji": "\ud83d\ude42",
+    "message": "There's such a peaceful, centered quality to your voice. You sound grounded and at ease, which is a beautiful state to be in. This inner calm you're experiencing is precious and worth protecting.\n\nThis peaceful state allows for deeper reflection, clearer thinking, and more meaningful connections with others. It's often when we're most open to insights and new perspectives.\n\nYour calmness is truly grounding and speaks to your inner strength and emotional maturity. This balanced state is the foundation for wisdom and authentic connection.\n\nCherish this centered feeling - it's a sign that you're doing well and that you've found a good balance in your life.",
+    "features": {
+      "pitch": 0,
+      "energy": 0,
+      "zero_crossing_rate": 0,
+      "spectral_centroid": 0
+    },
+    "timestamp": "2025-07-10T00:51:10"
+  }
+]

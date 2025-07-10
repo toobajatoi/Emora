@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <!-- Remove CDN socket.io -->
     <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script> -->
-    <script src="/socket.io/socket.io.js"></script>
 </head>
 <body>
     <!-- Theme Toggle Button -->
@@ -20,8 +19,20 @@
         <div class="container">
             <!-- Header -->
             <header class="header">
-                <h1 class="main-title">Emora - AI Mental Health Journal</h1>
-                <p class="subtitle">Record your thoughts by voice or text. Get instant, empathetic feedback and track your emotional journey with AI-powered analysis.</p>
+                <div class="header-content">
+                    <div class="header-text">
+                        <h1 class="main-title">Emora - AI Mental Health Journal</h1>
+                        <p class="subtitle">Record your thoughts by voice or text. Get instant, empathetic feedback and track your emotional journey with AI-powered analysis.</p>
+                    </div>
+                    <div class="header-actions">
+                        <div class="user-info">
+                            <span id="userDisplay" class="user-display">Welcome, {{ name }}!</span>
+                        </div>
+                        <button id="logoutBtn" class="btn btn-secondary btn-small" onclick="logout()">
+                            <span>🚪 Logout</span>
+                        </button>
+                    </div>
+                </div>
             </header>
 
             <!-- Journal Entry Card -->
@@ -121,15 +132,12 @@
                 <div class="history-header">
                     <h2 class="history-title">Your Journal History</h2>
                     <button 
-                        onclick="localStorage.removeItem('journalEntries'); loadJournalHistory();" 
+                        onclick="deleteAllJournals();"
                         class="btn btn-danger btn-small"
-                        aria-label="Delete all journal entries"
+                        aria-label="Delete all journal entries from your account"
                     >
                         🗑️ Delete All Journals
                     </button>
-                </div>
-                <div class="privacy-notice">
-                    <p>🔒 Your journals are stored <b>only in your browser</b> and never leave your device.</p>
                 </div>
                 <div id="journalHistory" class="journal-history" aria-label="Journal entries list"></div>
             </section>

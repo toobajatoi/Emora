@@ -1,0 +1,29 @@
+[
+  {
+    "text": " hey, voc\u00ea n\u00e3o aide?!",
+    "mood": "angry",
+    "emoji": "\ud83d\ude20",
+    "message": "I can sense the intensity of your emotions, and I want you to know that your anger is completely valid. Anger often serves as a protective emotion - it's your mind's way of saying that something isn't right or that you deserve better.\n\nYour anger is telling you something important. It might be signaling that boundaries need to be set, that something needs to change, or that you're feeling hurt or disappointed.\n\nTry taking a few deep breaths - inhale for 4 counts, hold for 4, exhale for 6. This can help you find some space to process what's beneath the anger.\n\nRemember that anger can be a powerful force for positive transformation when we learn to channel it constructively. What might your anger be trying to protect you from or motivate you toward?",
+    "features": {
+      "pitch": 252.68348693847656,
+      "energy": 0.0581117682158947,
+      "zero_crossing_rate": 0.07376208408273381,
+      "spectral_centroid": 1267.3015710615293,
+      "emotion": "neutral"
+    },
+    "timestamp": "2025-07-10T00:21:04"
+  },
+  {
+    "text": "heyyyy",
+    "mood": "calm",
+    "emoji": "\ud83d\ude42",
+    "message": "There's such a peaceful, centered quality to your voice. You sound grounded and at ease, which is a beautiful state to be in. This inner calm you're experiencing is precious and worth protecting.\n\nThis peaceful state allows for deeper reflection, clearer thinking, and more meaningful connections with others. It's often when we're most open to insights and new perspectives.\n\nYour calmness is truly grounding and speaks to your inner strength and emotional maturity. This balanced state is the foundation for wisdom and authentic connection.\n\nCherish this centered feeling - it's a sign that you're doing well and that you've found a good balance in your life.",
+    "features": {
+      "pitch": 0,
+      "energy": 0,
+      "zero_crossing_rate": 0,
+      "spectral_centroid": 0
+    },
+    "timestamp": "2025-07-10T00:21:18"
+  }
+]

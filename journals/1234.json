@@ -1,0 +1,85 @@
+[
+  {
+    "text": "hey",
+    "mood": "calm",
+    "emoji": "\ud83d\ude42",
+    "message": "There's such a peaceful, centered quality to your voice. You sound grounded and at ease, which is a beautiful state to be in. This inner calm you're experiencing is precious and worth protecting.\n\nThis peaceful state allows for deeper reflection, clearer thinking, and more meaningful connections with others. It's often when we're most open to insights and new perspectives.\n\nYour calmness is truly grounding and speaks to your inner strength and emotional maturity. This balanced state is the foundation for wisdom and authentic connection.\n\nCherish this centered feeling - it's a sign that you're doing well and that you've found a good balance in your life.",
+    "features": {
+      "pitch": 0,
+      "energy": 0,
+      "zero_crossing_rate": 0,
+      "spectral_centroid": 0
+    },
+    "timestamp": "2025-07-09T23:38:13"
+  },
+  {
+    "text": " How are you? I hope you are doing well. What the hell is wrong with you?",
+    "mood": "content",
+    "emoji": "\ud83d\ude0c",
+    "message": "You sound genuinely content and at ease with yourself and your circumstances. There's a lovely sense of satisfaction in your tone that's so refreshing to hear.\n\nContentment is such an underrated emotion - it's the quiet joy of being okay with yourself and your life as it is. This balanced state is often the foundation for lasting happiness.\n\nYour contentment shows that you've found a good place in your life, even if everything isn't perfect. It's a sign of emotional maturity and self-acceptance.\n\nThis feeling of being at ease with yourself and your life is precious. Contentment often comes from accepting what is while still being open to growth and new experiences.",
+    "features": {
+      "pitch": 255.8850555419922,
+      "energy": 0.046748433262109756,
+      "zero_crossing_rate": 0.05806522578983517,
+      "spectral_centroid": 1047.7404057161805,
+      "emotion": "neutral"
+    },
+    "timestamp": "2025-07-09T23:38:27"
+  },
+  {
+    "text": " Hey, you know, today's assignment is a difficult leap. It's too hard to get over this stuff.",
+    "mood": "angry",
+    "emoji": "\ud83d\ude20",
+    "message": "I can sense the intensity of your emotions, and I want you to know that your anger is completely valid. Anger often serves as a protective emotion - it's your mind's way of saying that something isn't right or that you deserve better.\n\nYour anger is telling you something important. It might be signaling that boundaries need to be set, that something needs to change, or that you're feeling hurt or disappointed.\n\nTry taking a few deep breaths - inhale for 4 counts, hold for 4, exhale for 6. This can help you find some space to process what's beneath the anger.\n\nRemember that anger can be a powerful force for positive transformation when we learn to channel it constructively. What might your anger be trying to protect you from or motivate you toward?",
+    "features": {
+      "pitch": 283.8370666503906,
+      "energy": 0.06347920000553131,
+      "zero_crossing_rate": 0.08566013313609468,
+      "spectral_centroid": 1240.7642215460537,
+      "emotion": "neutral"
+    },
+    "timestamp": "2025-07-09T23:40:32"
+  },
+  {
+    "text": " No, I meant that today's day has been really tough for me, I'm very much pain.",
+    "mood": "angry",
+    "emoji": "\ud83d\ude20",
+    "message": "I can sense the intensity of your emotions, and I want you to know that your anger is completely valid. Anger often serves as a protective emotion - it's your mind's way of saying that something isn't right or that you deserve better.\n\nYour anger is telling you something important. It might be signaling that boundaries need to be set, that something needs to change, or that you're feeling hurt or disappointed.\n\nTry taking a few deep breaths - inhale for 4 counts, hold for 4, exhale for 6. This can help you find some space to process what's beneath the anger.\n\nRemember that anger can be a powerful force for positive transformation when we learn to channel it constructively. What might your anger be trying to protect you from or motivate you toward?",
+    "features": {
+      "pitch": 264.5190734863281,
+      "energy": 0.04786789044737816,
+      "zero_crossing_rate": 0.105728891384778,
+      "spectral_centroid": 1368.1133245346364,
+      "emotion": "neutral"
+    },
+    "timestamp": "2025-07-09T23:40:53"
+  },
+  {
+    "text": " And so, so, so sad at the moment. I wish I could explain how it feels.",
+    "mood": "angry",
+    "emoji": "\ud83d\ude20",
+    "message": "I can sense the intensity of your emotions, and I want you to know that your anger is completely valid. Anger often serves as a protective emotion - it's your mind's way of saying that something isn't right or that you deserve better.\n\nYour anger is telling you something important. It might be signaling that boundaries need to be set, that something needs to change, or that you're feeling hurt or disappointed.\n\nTry taking a few deep breaths - inhale for 4 counts, hold for 4, exhale for 6. This can help you find some space to process what's beneath the anger.\n\nRemember that anger can be a powerful force for positive transformation when we learn to channel it constructively. What might your anger be trying to protect you from or motivate you toward?",
+    "features": {
+      "pitch": 267.3313903808594,
+      "energy": 0.07323087006807327,
+      "zero_crossing_rate": 0.14369419642857142,
+      "spectral_centroid": 1664.6951467485333,
+      "emotion": "neutral"
+    },
+    "timestamp": "2025-07-09T23:41:24"
+  },
+  {
+    "text": " I'm so sad.",
+    "mood": "angry",
+    "emoji": "\ud83d\ude20",
+    "message": "I can sense the intensity of your emotions, and I want you to know that your anger is completely valid. Anger often serves as a protective emotion - it's your mind's way of saying that something isn't right or that you deserve better.\n\nYour anger is telling you something important. It might be signaling that boundaries need to be set, that something needs to change, or that you're feeling hurt or disappointed.\n\nTry taking a few deep breaths - inhale for 4 counts, hold for 4, exhale for 6. This can help you find some space to process what's beneath the anger.\n\nRemember that anger can be a powerful force for positive transformation when we learn to channel it constructively. What might your anger be trying to protect you from or motivate you toward?",
+    "features": {
+      "pitch": 282.4554748535156,
+      "energy": 0.11516669392585754,
+      "zero_crossing_rate": 0.17160797119140625,
+      "spectral_centroid": 1817.8884357104566,
+      "emotion": "neutral"
+    },
+    "timestamp": "2025-07-09T23:41:33"
+  }
+]

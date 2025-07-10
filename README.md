@@ -12,6 +12,7 @@ A modern, AI-powered mental health journaling application that provides real-tim
 - **Modern UI/UX**: Minimal professional design with responsive, accessible interface
 - **Dark/Light Mode**: Toggle between themes with persistent user preferences
 - **Audio Feature Extraction**: Advanced analysis of pitch, energy, and spectral characteristics
+- **Voice Lock Authentication**: Secure voice biometric authentication system
 
 ### 🎨 Design Features
 - **Minimal Professional UI**: Clean, modern interface with subtle shadows and borders
@@ -77,6 +78,38 @@ Emora uses a **client-server architecture** with real-time communication capabil
 - **NumPy**: Numerical computations and data processing
 - **Custom ML Models**: Mood classification algorithms
 
+### 🎤 Voice Authentication System
+
+#### How Voice Authentication Works
+Emora includes a sophisticated voice biometric authentication system that allows users to secure their journal with their unique voice characteristics:
+
+1. **Voice Enrollment**: Users record their voice saying a passphrase
+2. **Feature Extraction**: System extracts unique voice characteristics:
+   - **Pitch Analysis**: Fundamental frequency and variations
+   - **Spectral Features**: Voice timbre and resonance
+   - **MFCC Coefficients**: Mel-frequency cepstral coefficients
+   - **Energy Patterns**: Voice intensity and dynamics
+   - **Formant Analysis**: Vocal tract characteristics
+
+3. **Voice Matching**: Cosine similarity comparison between stored and new recordings
+4. **Authentication**: Access granted if similarity exceeds threshold (85%)
+
+#### Voice Authentication Features
+- **Secure Enrollment**: Create voice profiles with custom passphrases
+- **Real-Time Verification**: Instant voice recognition and authentication
+- **Profile Management**: Check, update, and delete voice profiles
+- **Confidence Scoring**: Percentage-based confidence in voice matches
+- **Fallback Options**: Text-based authentication as backup
+- **Privacy-First**: Voice features stored locally, never transmitted
+
+#### Voice Biometric Features Extracted
+- **Pitch Characteristics**: Mean, standard deviation, range
+- **Spectral Centroid**: Brightness of voice
+- **MFCC Features**: Voice timbre and quality
+- **Energy Metrics**: Voice intensity patterns
+- **Zero Crossing Rate**: Voice complexity
+- **Spectral Rolloff**: Frequency distribution
+
 ### Security & Privacy
 
 - **Local Storage**: All journal entries stored in user's browser
@@ -86,10 +119,10 @@ Emora uses a **client-server architecture** with real-time communication capabil
 
 ## 🛠️ Technical Stack
 
-**Backend**: Python, Flask, Flask-SocketIO, Whisper (OpenAI), Librosa, NumPy  
+**Backend**: Python, Flask, Flask-SocketIO, Whisper (OpenAI), Librosa, NumPy, Scikit-learn  
 **Frontend**: HTML5, CSS3, JavaScript (ES6+), Web Audio API  
-**AI/ML**: Custom mood classification models, audio feature extraction  
-**Architecture**: Real-time WebSocket communication, RESTful APIs  
+**AI/ML**: Custom mood classification models, audio feature extraction, voice biometrics  
+**Architecture**: Real-time WebSocket communication, RESTful APIs, voice authentication system  
 
 ## 🚀 Getting Started
 
@@ -158,14 +191,43 @@ Emora uses a **client-server architecture** with real-time communication capabil
 - Your theme preference is automatically saved
 - Smooth transitions between themes
 
+### Voice Authentication
+
+#### Enrolling Your Voice
+1. Navigate to the "Voice Lock Authentication" section
+2. Click the "🎤 Enroll Voice" tab
+3. Enter your unique User ID
+4. Optionally customize your passphrase (default: "Hello Emora")
+5. Click "🎤 Record Voice" and speak your passphrase clearly
+6. Click "⏹️ Stop Recording" when finished
+7. Click "Create Voice Profile" to save your voice biometrics
+
+#### Logging In with Voice
+1. Click the "🔐 Voice Login" tab
+2. Enter your User ID
+3. Click "🎤 Record Voice" and speak your passphrase
+4. Click "⏹️ Stop Recording" when finished
+5. Click "Verify Voice" to authenticate
+6. View your confidence score and authentication result
+
+#### Managing Your Voice Profile
+1. Click the "⚙️ Manage Profile" tab
+2. Enter your User ID
+3. Use "📋 Check Profile" to view your profile details
+4. Use "🗑️ Delete Profile" to remove your voice biometrics
+5. Confirm deletion when prompted
+
 ## 🏗️ Project Structure
 
 ```
 Emora/
 ├── app.py                 # Main Flask application & WebSocket server
+├── voice_auth.py          # Voice authentication system
 ├── feature_extractor.py   # Audio feature extraction utilities
 ├── mood_classifier.py     # Mood detection and classification logic
+├── test_voice_auth.py     # Voice authentication test suite
 ├── models/               # AI model storage (Whisper, custom models)
+├── voice_profiles/       # Voice biometric profiles (local storage)
 ├── static/               # Static assets
 │   ├── css/
 │   │   └── style.css     # Theme-aware CSS with variables

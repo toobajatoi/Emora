@@ -1,0 +1,20 @@
+{
+  "user_id": "6010",
+  "passphrase": "you loser",
+  "features": {
+    "pitch_mean": 1095.130859375,
+    "pitch_std": 1117.88525390625,
+    "pitch_range": 3803.47998046875,
+    "spectral_centroid_mean": 1453.3485676322687,
+    "spectral_centroid_std": 647.3962046115249,
+    "mfcc_mean": -18.950857162475586,
+    "mfcc_std": 100.90509033203125,
+    "energy_mean": 0.06674300134181976,
+    "energy_std": 0.08538001775741577,
+    "zcr_mean": 0.09335384728773585,
+    "zcr_std": 0.05372124289769445,
+    "rolloff_mean": 2949.439858490566,
+    "rolloff_std": 1307.9608339641886
+  },
+  "created_at": "2025-07-09T23:42:24"
+}

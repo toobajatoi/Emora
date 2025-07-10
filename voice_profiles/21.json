@@ -1,0 +1,20 @@
+{
+  "user_id": "21",
+  "passphrase": "Hello",
+  "features": {
+    "pitch_mean": 562.260009765625,
+    "pitch_std": 552.2337646484375,
+    "pitch_range": 2905.48828125,
+    "spectral_centroid_mean": 1131.4362596922585,
+    "spectral_centroid_std": 219.19577465182545,
+    "mfcc_mean": -28.22636604309082,
+    "mfcc_std": 140.99661254882812,
+    "energy_mean": 0.01552827563136816,
+    "energy_std": 0.0265703983604908,
+    "zcr_mean": 0.06453080610795454,
+    "zcr_std": 0.022209586893825562,
+    "rolloff_mean": 2191.583806818182,
+    "rolloff_std": 595.8314495640756
+  },
+  "created_at": "2025-07-09T18:26:03"
+}

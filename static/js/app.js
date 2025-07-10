@@ -4,6 +4,78 @@ Created by Tooba Jatoi
 Copyright © 2025 Tooba Jatoi. All rights reserved.
 */
 
+// Authentication and Session Management
+// REMOVE localStorage-based session logic. Let Flask session (cookie) handle authentication.
+// class AuthManager {
+//     constructor() {
+//         this.session = null;
+//         this.checkAuth();
+//     }
+//     checkAuth() {
+//         const sessionData = localStorage.getItem('emora_session');
+//         if (!sessionData) {
+//             this.redirectToLogin();
+//             return;
+//         }
+//         try {
+//             this.session = JSON.parse(sessionData);
+//             const expiresAt = new Date(this.session.expires_at);
+//             if (expiresAt <= new Date()) {
+//                 // Session expired
+//                 localStorage.removeItem('emora_session');
+//                 this.redirectToLogin();
+//                 return;
+//             }
+//             // Update user display
+//             this.updateUserDisplay();
+//         } catch (error) {
+//             console.error('Error parsing session:', error);
+//             localStorage.removeItem('emora_session');
+//             this.redirectToLogin();
+//         }
+//     }
+//     updateUserDisplay() {}
+//     redirectToLogin() {
+//         window.location.href = '/';
+//     }
+//     async logout() {
+//         try {
+//             // Call logout endpoint
+//             const response = await fetch('/logout', {
+//                 method: 'GET',
+//                 headers: { 'Content-Type': 'application/json' }
+//             });
+//             if (response.ok) {
+//                 // Redirect to login page
+//                 setTimeout(() => {
+//                     window.location.href = '/';
+//                 }, 1000);
+//             } else {
+//                 showNotification('Logout failed', 'error');
+//             }
+//         } catch (error) {
+//             console.error('Logout error:', error);
+//             setTimeout(() => {
+//                 window.location.href = '/';
+//             }, 1000);
+//         }
+//     }
+// }
+// REMOVE any instantiation or usage of AuthManager elsewhere in your code.
+
+// Global logout function
+window.logout = async function() {
+    try {
+        // Call Flask logout endpoint (which clears the session and redirects)
+        await fetch('/logout', { method: 'GET', credentials: 'same-origin' });
+        // Redirect to login page
+        window.location.href = '/';
+    } catch (error) {
+        console.error('Logout error:', error);
+        window.location.href = '/';
+    }
+};
+
 // Theme management
 let currentTheme = localStorage.getItem('theme') || 'light';
 
@@ -407,17 +479,17 @@ function showResults(data) {
     });
     
     // Store entry in localStorage
-    saveJournalEntry({
-        date: new Date().toLocaleString(),
-        mood: data.mood || 'neutral',
-        emoji: data.emoji || '😊',
-        summary: data.summary || '',
-        message: data.message || '',
-        transcription: data.transcription || '',
-        features: data.features || {}
-    });
+    // saveJournalEntry({
+    //     date: new Date().toLocaleString(),
+    //     mood: data.mood || 'neutral',
+    //     emoji: data.emoji || '😊',
+    //     summary: data.summary || '',
+    //     message: data.message || '',
+    //     transcription: data.transcription || '',
+    //     features: data.features || {}
+    // });
     
-    loadJournalHistory();
+    // loadJournalHistory(); // REMOVED
     
     // Clear form
     if (journalText) journalText.value = '';
@@ -443,120 +515,115 @@ function animateValue(element, start, end, duration) {
     requestAnimationFrame(update);
 }
 
-// Store journal entry in localStorage
-function saveJournalEntry(entry) {
-    let entries = JSON.parse(localStorage.getItem('journalEntries') || '[]');
-    entries.unshift(entry);
-    localStorage.setItem('journalEntries', JSON.stringify(entries));
-}
+// Remove all localStorage-based journal logic
+// Replace saveJournalEntry, loadJournalHistory, and related calls
 
-// Load and display journal history
-function loadJournalHistory() {
+// Fetch and display journal history from backend
+async function loadJournalHistory() {
     const container = document.getElementById('journalHistory');
     if (!container) return;
-    
-    let entries = JSON.parse(localStorage.getItem('journalEntries') || '[]');
-    
-    if (entries.length === 0) {
-        container.innerHTML = `
-            <div class="empty-state">
-                <div class="empty-icon">📝</div>
-                <p>No journal entries yet</p>
-                <p>Start by writing or recording your first entry!</p>
-            </div>
-        `;
-        return;
-    }
-    
-    container.innerHTML = entries.map((entry, idx) => `
-        <div class="journal-entry" onclick="openJournalModal(${idx})">
-            <div class="journal-entry-header">
-                <div class="journal-entry-info">
-                    <span class="journal-entry-emoji">${entry.emoji || '📝'}</span>
-                    <span class="journal-entry-mood">${entry.mood ? entry.mood.charAt(0).toUpperCase() + entry.mood.slice(1) : 'Unknown'}</span>
+    try {
+        const res = await fetch('/journal', { method: 'GET', credentials: 'same-origin' });
+        // If we get HTML instead of JSON, user is not authenticated (redirected to login)
+        const contentType = res.headers.get('content-type') || '';
+        if (!res.ok) throw new Error('Failed to fetch journal history');
+        if (!contentType.includes('application/json')) {
+            container.innerHTML = `<div class="empty-state"><p>Please log in to view your journal history.</p></div>`;
+            return;
+        }
+        const data = await res.json();
+        const entries = data.entries || [];
+        if (entries.length === 0) {
+            container.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-icon">📝</div>
+                    <p>No journal entries yet</p>
+                    <p>Start by writing or recording your first entry!</p>
                 </div>
-                <div class="journal-entry-date">${entry.date || ''}</div>
-                <button class="btn btn-danger btn-small delete-entry-btn" onclick="event.stopPropagation(); deleteJournalEntry(${idx});" aria-label="Delete this journal entry">🗑️</button>
-            </div>
-            <div class="journal-entry-content">
-                <div class="journal-entry-message">${entry.message || ''}</div>
-                <div class="journal-entry-summary">${entry.summary || ''}</div>
-            </div>
+            `;
+            return;
+        }
+        container.innerHTML = entries.map((entry, idx) => `
+            <div class="journal-entry" onclick="openJournalModal(${idx})">
+                <div class="journal-entry-header">
+                    <div class="journal-entry-info">
+                        <span class="journal-entry-emoji">${entry.emoji || '📝'}</span>
+                        <span class="journal-entry-mood">${entry.mood ? entry.mood.charAt(0).toUpperCase() + entry.mood.slice(1) : 'Unknown'}</span>
+                    </div>
+                    <div class="journal-entry-date">${entry.timestamp ? new Date(entry.timestamp).toLocaleString() : ''}</div>
+                </div>
+                <div class="journal-entry-content">
+                    <div class="journal-entry-usertext">${entry.text ? `<b>Your Journal:</b> <span>${entry.text}</span><br>` : ''}</div>
+                    <div class="journal-entry-message">${entry.message || ''}</div>
+                </div>
             </div>
         `).join('');
+    } catch (error) {
+        container.innerHTML = `<div class="empty-state"><p>Error loading journal history.</p></div>`;
+    }
 }
 
-// Modal functions
-window.openJournalModal = function(idx) {
-    let entries = JSON.parse(localStorage.getItem('journalEntries') || '[]');
-    const entry = entries[idx];
-    if (!entry) return;
-    
-    const modal = document.getElementById('journalModal');
-    const modalDate = document.getElementById('modalDate');
-    const modalEmoji = document.getElementById('modalEmoji');
-    const modalMood = document.getElementById('modalMood');
-    const modalMessage = document.getElementById('modalMessage');
-    const modalSummary = document.getElementById('modalSummary');
-    const modalTranscription = document.getElementById('modalTranscription');
-    const modalFeatures = document.getElementById('modalFeatures');
-    
-    if (modalDate) modalDate.textContent = entry.date || '';
-    if (modalEmoji) modalEmoji.textContent = entry.emoji || '📝';
-    if (modalMood) modalMood.textContent = entry.mood ? entry.mood.charAt(0).toUpperCase() + entry.mood.slice(1) : 'Unknown';
-    if (modalMessage) modalMessage.textContent = entry.message || '';
-    if (modalSummary) modalSummary.textContent = entry.summary || '';
-    if (modalTranscription) modalTranscription.textContent = entry.transcription || '';
-    
-    // Features
-    if (modalFeatures && entry.features) {
-        const featuresText = Object.entries(entry.features)
-            .map(([key, value]) => {
-                let num = Number(value);
-                return `${key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}: ${isFinite(num) ? num.toFixed(2) : '0.00'}`;
-            })
-            .join(', ');
-        modalFeatures.textContent = featuresText;
-    } else if (modalFeatures) {
-        modalFeatures.textContent = '';
-    }
-
-    // Add navigation buttons
-    let navContainer = document.getElementById('modalNav');
-    if (!navContainer) {
-        navContainer = document.createElement('div');
-        navContainer.id = 'modalNav';
-        navContainer.style.display = 'flex';
-        navContainer.style.justifyContent = 'space-between';
-        navContainer.style.marginTop = '2rem';
-        modal.querySelector('.modal-content').appendChild(navContainer);
-    }
-    navContainer.innerHTML = `
-        <button class="btn btn-secondary btn-small" id="prevJournalBtn" ${idx === entries.length - 1 ? 'disabled' : ''}>&larr; Previous</button>
-        <button class="btn btn-secondary btn-small" id="nextJournalBtn" ${idx === 0 ? 'disabled' : ''}>Next &rarr;</button>
-    `;
-    document.getElementById('prevJournalBtn').onclick = function(e) {
-        e.stopPropagation();
-        if (idx < entries.length - 1) window.openJournalModal(idx + 1);
-    };
-    document.getElementById('nextJournalBtn').onclick = function(e) {
-        e.stopPropagation();
-        if (idx > 0) window.openJournalModal(idx - 1);
-    };
-
-    modal.classList.add('active');
+// Modal functions (update to use backend data)
+window.openJournalModal = async function(idx) {
+    try {
+        const res = await fetch('/journal', { method: 'GET', credentials: 'same-origin' });
+        if (!res.ok) throw new Error('Failed to fetch journal history');
+        const data = await res.json();
+        const entries = data.entries || [];
+        const entry = entries[idx];
+        if (!entry) return;
+        const modal = document.getElementById('journalModal');
+        const modalDate = document.getElementById('modalDate');
+        const modalEmoji = document.getElementById('modalEmoji');
+        const modalMood = document.getElementById('modalMood');
+        const modalMessage = document.getElementById('modalMessage');
+        const modalSummary = document.getElementById('modalSummary');
+        const modalTranscription = document.getElementById('modalTranscription');
+        const modalFeatures = document.getElementById('modalFeatures');
+        if (modalDate) modalDate.textContent = entry.timestamp ? new Date(entry.timestamp).toLocaleString() : '';
+        if (modalEmoji) modalEmoji.textContent = entry.emoji || '📝';
+        if (modalMood) modalMood.textContent = entry.mood ? entry.mood.charAt(0).toUpperCase() + entry.mood.slice(1) : 'Unknown';
+        if (modalMessage) modalMessage.textContent = entry.message || '';
+        if (modalSummary) modalSummary.textContent = entry.text || entry.summary || '';
+        if (modalTranscription) modalTranscription.textContent = entry.transcription || '';
+        if (modalFeatures && entry.features) {
+            const featuresText = Object.entries(entry.features)
+                .map(([key, value]) => {
+                    let num = Number(value);
+                    return `${key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}: ${isFinite(num) ? num.toFixed(2) : '0.00'}`;
+                })
+                .join(', ');
+            modalFeatures.textContent = featuresText;
+        } else if (modalFeatures) {
+            modalFeatures.textContent = '';
+        }
+        let navContainer = document.getElementById('modalNav');
+        if (!navContainer) {
+            navContainer = document.createElement('div');
+            navContainer.id = 'modalNav';
+            navContainer.style.display = 'flex';
+            navContainer.style.justifyContent = 'space-between';
+            navContainer.style.marginTop = '2rem';
+            modal.querySelector('.modal-content').appendChild(navContainer);
+        }
+        navContainer.innerHTML = `
+            <button class="btn btn-secondary btn-small" id="prevJournalBtn" ${idx === entries.length - 1 ? 'disabled' : ''}>&larr; Previous</button>
+            <button class="btn btn-secondary btn-small" id="nextJournalBtn" ${idx === 0 ? 'disabled' : ''}>Next &rarr;</button>
+        `;
+        document.getElementById('prevJournalBtn').onclick = function(e) {
+            e.stopPropagation();
+            if (idx < entries.length - 1) window.openJournalModal(idx + 1);
+        };
+        document.getElementById('nextJournalBtn').onclick = function(e) {
+            e.stopPropagation();
+            if (idx > 0) window.openJournalModal(idx - 1);
+        };
+        modal.classList.add('active');
+    } catch (error) {}
 }
 
 window.closeJournalModal = function() {
     document.getElementById('journalModal').classList.remove('active');
-}
-
-// Delete journal entry
-function deleteJournalEntry(idx) {
-    let entries = JSON.parse(localStorage.getItem('journalEntries') || '[]');
-    entries.splice(idx, 1);
-    localStorage.setItem('journalEntries', JSON.stringify(entries));
-    loadJournalHistory();
 }
 
 // Journal submit handler
@@ -566,19 +633,21 @@ function submitJournal() {
         showNotification('Please write about your day or record your voice.', 'error');
         return;
     }
-    
     showLoading();
-    
     fetch('/journal', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'same-origin',
         body: JSON.stringify({ text })
     })
     .then(res => {
         if (!res.ok) throw new Error('Network response was not ok');
         return res.json();
     })
-    .then(data => showResults(data))
+    .then(data => {
+        showResults(data);
+        loadJournalHistory(); // Refresh from backend
+    })
     .catch(error => {
         console.error('Error:', error);
         hideLoading();
@@ -596,6 +665,7 @@ function submitAudioJournal(audioB64) {
     fetch("/journal", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: 'same-origin',
         body: JSON.stringify({
             text: textValue, // Always a string
             audio: "data:audio/webm;base64," + audioB64
@@ -608,7 +678,7 @@ function submitAudioJournal(audioB64) {
             showNotification(data.error, "error");
         } else {
             showResults(data);
-            saveJournalEntry(data);
+            loadJournalHistory(); // Refresh from backend
         }
     })
     .catch(error => {
@@ -623,14 +693,25 @@ if (journalSubmitBtn) {
     journalSubmitBtn.onclick = submitJournal;
 }
 
+// Delete all journals for the logged-in user
+window.deleteAllJournals = async function() {
+    if (!confirm('Are you sure you want to delete all your journal entries? This cannot be undone.')) return;
+    try {
+        const res = await fetch('/journal', { method: 'DELETE', credentials: 'same-origin' });
+        if (!res.ok) throw new Error('Failed to delete journal history');
+        loadJournalHistory();
+        showNotification('All journal entries deleted.', 'success');
+    } catch (error) {
+        showNotification('Error deleting journal history.', 'error');
+    }
+}
+
 // Initialize when page loads
 window.onload = function() {
     console.log('Page loaded, initializing...');
     initializeTheme();
     initAudio();
     loadJournalHistory();
-    
-    // Hide results initially
     if (results) results.classList.add('hidden');
     if (loading) loading.classList.add('hidden');
 };
@@ -638,6 +719,12 @@ window.onload = function() {
 // Also initialize theme when DOM is ready (fallback)
 document.addEventListener('DOMContentLoaded', function() {
     console.log('DOM Content Loaded');
+    
+    // REMOVE AuthManager instantiation if not already done
+    // if (!window.authManager) {
+    //     window.authManager = new AuthManager();
+    // }
+    
     // Apply theme immediately
     setTheme(currentTheme);
     

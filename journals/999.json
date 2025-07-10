@@ -1,0 +1,56 @@
+[
+  {
+    "text": "heyyyyy",
+    "mood": "calm",
+    "emoji": "\ud83d\ude42",
+    "message": "There's such a peaceful, centered quality to your voice. You sound grounded and at ease, which is a beautiful state to be in. This inner calm you're experiencing is precious and worth protecting.\n\nThis peaceful state allows for deeper reflection, clearer thinking, and more meaningful connections with others. It's often when we're most open to insights and new perspectives.\n\nYour calmness is truly grounding and speaks to your inner strength and emotional maturity. This balanced state is the foundation for wisdom and authentic connection.\n\nCherish this centered feeling - it's a sign that you're doing well and that you've found a good balance in your life.",
+    "features": {
+      "pitch": 0,
+      "energy": 0,
+      "zero_crossing_rate": 0,
+      "spectral_centroid": 0
+    },
+    "timestamp": "2025-07-10T00:58:30"
+  },
+  {
+    "text": "i love you so muchh",
+    "mood": "calm",
+    "emoji": "\ud83d\ude42",
+    "message": "There's such a peaceful, centered quality to your voice. You sound grounded and at ease, which is a beautiful state to be in. This inner calm you're experiencing is precious and worth protecting.\n\nThis peaceful state allows for deeper reflection, clearer thinking, and more meaningful connections with others. It's often when we're most open to insights and new perspectives.\n\nYour calmness is truly grounding and speaks to your inner strength and emotional maturity. This balanced state is the foundation for wisdom and authentic connection.\n\nCherish this centered feeling - it's a sign that you're doing well and that you've found a good balance in your life.",
+    "features": {
+      "pitch": 0,
+      "energy": 0,
+      "zero_crossing_rate": 0,
+      "spectral_centroid": 0
+    },
+    "timestamp": "2025-07-10T00:58:42"
+  },
+  {
+    "text": " What the hell is wrong with you?",
+    "mood": "angry",
+    "emoji": "\ud83d\ude20",
+    "message": "I can sense the intensity of your emotions, and I want you to know that your anger is completely valid. Anger often serves as a protective emotion - it's your mind's way of saying that something isn't right or that you deserve better.\n\nYour anger is telling you something important. It might be signaling that boundaries need to be set, that something needs to change, or that you're feeling hurt or disappointed.\n\nTry taking a few deep breaths - inhale for 4 counts, hold for 4, exhale for 6. This can help you find some space to process what's beneath the anger.\n\nRemember that anger can be a powerful force for positive transformation when we learn to channel it constructively. What might your anger be trying to protect you from or motivate you toward?",
+    "features": {
+      "pitch": 299.3190002441406,
+      "energy": 0.1857239305973053,
+      "zero_crossing_rate": 0.11858367919921875,
+      "spectral_centroid": 1575.4531599855004,
+      "emotion": "neutral"
+    },
+    "timestamp": "2025-07-10T01:03:17"
+  },
+  {
+    "text": " I love you so, I'm gonna take my things and leave you behind. These feelings go down and down, there I may have won my heart. I hope you feel what I felt when you shattered my shoulder.",
+    "mood": "content",
+    "emoji": "\ud83d\ude0c",
+    "message": "You sound genuinely content and at ease with yourself and your circumstances. There's a lovely sense of satisfaction in your tone that's so refreshing to hear.\n\nContentment is such an underrated emotion - it's the quiet joy of being okay with yourself and your life as it is. This balanced state is often the foundation for lasting happiness.\n\nYour contentment shows that you've found a good place in your life, even if everything isn't perfect. It's a sign of emotional maturity and self-acceptance.\n\nThis feeling of being at ease with yourself and your life is precious. Contentment often comes from accepting what is while still being open to growth and new experiences.",
+    "features": {
+      "pitch": 289.7164306640625,
+      "energy": 0.06724386662244797,
+      "zero_crossing_rate": 0.08752276838818399,
+      "spectral_centroid": 1182.6926010821192,
+      "emotion": "neutral"
+    },
+    "timestamp": "2025-07-10T01:04:44"
+  }
+]

@@ -1,0 +1,20 @@
+{
+  "user_id": "11",
+  "passphrase": "tiger",
+  "features": {
+    "pitch_mean": 620.6654052734375,
+    "pitch_std": 513.3903198242188,
+    "pitch_range": 2548.67724609375,
+    "spectral_centroid_mean": 1272.8220363776118,
+    "spectral_centroid_std": 172.79801255873946,
+    "mfcc_mean": -22.430072784423828,
+    "mfcc_std": 106.98761749267578,
+    "energy_mean": 0.0712641254067421,
+    "energy_std": 0.12064126133918762,
+    "zcr_mean": 0.07795916863207547,
+    "zcr_std": 0.014753682760447374,
+    "rolloff_mean": 2463.001179245283,
+    "rolloff_std": 463.81579284771425
+  },
+  "created_at": "2025-07-09T19:38:55"
+}

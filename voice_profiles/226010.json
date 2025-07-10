@@ -1,0 +1,20 @@
+{
+  "user_id": "226010",
+  "passphrase": "what the hell",
+  "features": {
+    "pitch_mean": 1198.2171630859375,
+    "pitch_std": 1204.3974609375,
+    "pitch_range": 3805.110107421875,
+    "spectral_centroid_mean": 1386.7898435040543,
+    "spectral_centroid_std": 516.7815891377422,
+    "mfcc_mean": -15.690767288208008,
+    "mfcc_std": 92.30516815185547,
+    "energy_mean": 0.11779240518808365,
+    "energy_std": 0.14156274497509003,
+    "zcr_mean": 0.08762579449152542,
+    "zcr_std": 0.06126346481262193,
+    "rolloff_mean": 2777.5423728813557,
+    "rolloff_std": 1084.6925172830674
+  },
+  "created_at": "2025-07-09T23:52:10"
+}

@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emora - Voice Lock Login</title>
+    <meta name="description" content="Secure voice authentication for your mental health journal">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+    <style>
+        body {
+            background: linear-gradient(135deg, #e0e7ff 0%, #f8fafc 100%);
+            min-height: 100vh;
+        }
+        .login-logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+        .login-logo-icon {
+            font-size: 2.5rem;
+            margin-right: 0.5rem;
+            color: var(--accent-primary);
+            filter: drop-shadow(0 2px 8px rgba(102,126,234,0.15));
+        }
+        .login-logo-text {
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            color: var(--accent-primary);
+        }
+        .login-card {
+            box-shadow: 0 8px 32px rgba(102,126,234,0.10), 0 1.5px 4px rgba(0,0,0,0.04);
+            border-radius: 20px;
+            border: 1.5px solid #e2e8f0;
+            background: rgba(255,255,255,0.98);
+            padding: 2.5rem 2rem 2rem 2rem;
+            margin-top: 1.5rem;
+        }
+        .login-tabs {
+            border-radius: 12px 12px 0 0;
+            background: #f1f5f9;
+            box-shadow: 0 2px 8px rgba(102,126,234,0.04);
+        }
+        .login-tab.active {
+            background: linear-gradient(90deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
+            color: #fff;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(102,126,234,0.10);
+        }
+        .login-content {
+            transition: opacity 0.3s, transform 0.3s;
+            opacity: 0;
+            transform: translateY(20px);
+            pointer-events: none;
+        }
+        .login-content.active {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+        .login-status.success {
+            color: var(--success-color);
+            background: #e6fffa;
+            border: 1px solid #b2f5ea;
+            border-radius: 8px;
+            margin-top: 1rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .login-status.error {
+            color: var(--error-color);
+            background: #fff5f5;
+            border: 1px solid #fed7d7;
+            border-radius: 8px;
+            margin-top: 1rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .login-status.success::before {
+            content: '✔️';
+        }
+        .login-status.error::before {
+            content: '❌';
+        }
+    </style>
+</head>
+<body>
+    <!-- Theme Toggle Button -->
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark/light mode">
+        <span class="icon" id="themeIcon">🌙</span>
+    </button>
+    
+    <div class="login-wrapper">
+        <div class="login-container">
+            <!-- Logo -->
+            <div class="login-logo">
+                <span class="login-logo-icon">🧠</span>
+                <span class="login-logo-text">Emora</span>
+            </div>
+            <!-- Header -->
+            <header class="login-header">
+                <h1 class="login-title">AI Mental Health Journal</h1>
+                <p class="login-subtitle">Secure your thoughts with voice authentication</p>
+            </header>
+
+            <!-- Login Card -->
+            <section class="login-card">
+                <div class="login-tabs">
+                    <button class="login-tab active" data-tab="voice">🎤 Voice Login</button>
+                    <button class="login-tab" data-tab="password">🔐 Password Login</button>
+                    <button class="login-tab" data-tab="enroll">📝 New User</button>
+                </div>
+                
+                <!-- Voice Login Tab -->
+                <div class="login-content active" id="voice-tab">
+                    <h2 class="login-section-title">Voice Authentication</h2>
+                    <p class="login-section-subtitle">Speak your passphrase to access your journal</p>
+                    
+                    <div class="form-group">
+                        <label for="loginUserId" class="form-label">User ID:</label>
+                        <input type="text" id="loginUserId" class="form-input" placeholder="Enter your user ID" required>
+                    </div>
+                    
+                    <div class="voice-recording-section">
+                        <div class="voice-spectrogram-container">
+                            <canvas id="voiceSpectrogram" class="voice-spectrogram" aria-label="Voice authentication visualization">
+                                <div class="spectrogram-label">Voice Spectrum</div>
+                            </canvas>
+                            <div class="spectrogram-label">Voice Spectrum</div>
+                            <div class="spectrogram-frequency-labels">
+                                <span>8kHz</span>
+                                <span>4kHz</span>
+                                <span>2kHz</span>
+                                <span>1kHz</span>
+                                <span>500Hz</span>
+                            </div>
+                        </div>
+                        <div class="voice-controls">
+                            <button id="voiceStartRecording" class="btn btn-primary" type="button">
+                                <span>🎤 Start Voice Login</span>
+                            </button>
+                            <button id="voiceStopRecording" class="btn btn-secondary" type="button" style="display:none;">
+                                <span>⏹️ Stop Recording</span>
+                            </button>
+                        </div>
+                        <div id="loginStatus" class="login-status" aria-live="polite"></div>
+                    </div>
+                    
+                    <div class="login-fallback">
+                        <p>Having trouble with voice login?</p>
+                        <button class="btn btn-secondary btn-small" onclick="switchToPassword()">
+                            Use Password Instead
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Password Login Tab -->
+                <div class="login-content" id="password-tab">
+                    <h2 class="login-section-title">Password Authentication</h2>
+                    <p class="login-section-subtitle">Enter your password to access your journal</p>
+                    
+                    <div class="form-group">
+                        <label for="passwordUserId" class="form-label">User ID:</label>
+                        <input type="text" id="passwordUserId" class="form-input" placeholder="Enter your user ID" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="userPassword" class="form-label">Password:</label>
+                        <input type="password" id="userPassword" class="form-input" placeholder="Enter your password" required>
+                    </div>
+                    
+                    <button id="passwordLoginBtn" class="btn btn-primary" type="button">
+                        <span>🔐 Login with Password</span>
+                    </button>
+                    
+                    <div id="passwordStatus" class="login-status" aria-live="polite"></div>
+                    
+                    <div class="login-fallback">
+                        <p>Prefer voice authentication?</p>
+                        <button class="btn btn-secondary btn-small" onclick="switchToVoice()">
+                            Use Voice Instead
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- New User Enrollment Tab -->
+                <div class="login-content" id="enroll-tab">
+                    <h2 class="login-section-title">Create New Account</h2>
+                    <p class="login-section-subtitle">Set up voice authentication for your journal</p>
+                    
+                    <div class="form-group">
+                        <label for="enrollName" class="form-label">Your Name:</label>
+                        <input type="text" id="enrollName" class="form-input" placeholder="Enter your name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="enrollUserId" class="form-label">Choose User ID:</label>
+                        <input type="text" id="enrollUserId" class="form-input" placeholder="Choose a unique user ID" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="enrollPassword" class="form-label">Create Password:</label>
+                        <input type="password" id="enrollPassword" class="form-input" placeholder="Create a secure password" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="enrollPassphrase" class="form-label">Voice Passphrase:</label>
+                        <input type="text" id="enrollPassphrase" class="form-input" placeholder="Say this phrase when recording (default: Hello Emora)" value="Hello Emora">
+                    </div>
+                    
+                    <div class="voice-recording-section">
+                        <div class="voice-spectrogram-container">
+                            <canvas id="enrollSpectrogram" class="voice-spectrogram" aria-label="Voice enrollment visualization">
+                                <div class="spectrogram-label">Voice Spectrum</div>
+                            </canvas>
+                            <div class="spectrogram-label">Voice Spectrum</div>
+                            <div class="spectrogram-frequency-labels">
+                                <span>8kHz</span>
+                                <span>4kHz</span>
+                                <span>2kHz</span>
+                                <span>1kHz</span>
+                                <span>500Hz</span>
+                            </div>
+                        </div>
+                        <div class="voice-controls">
+                            <button id="enrollStartRecording" class="btn btn-secondary" type="button">
+                                <span>🎤 Record Voice</span>
+                            </button>
+                            <button id="enrollStopRecording" class="btn btn-secondary" type="button" style="display:none;">
+                                <span>⏹️ Stop Recording</span>
+                            </button>
+                            <button id="enrollRetakeRecording" class="btn btn-secondary" type="button" style="display:none;">
+                                <span>🔄 Retake Recording</span>
+                            </button>
+                        </div>
+                        
+                        <!-- Audio playback for enrollment -->
+                        <div id="enrollAudioPlayback" style="display: none; margin-top: 15px;">
+                            <h4 style="margin: 10px 0; color: var(--text-primary);">🎵 Recorded Audio:</h4>
+                            <audio id="enrollRecordedAudio" controls style="width: 100%; margin: 10px 0;"></audio>
+                            <p style="font-size: 0.9em; color: var(--text-secondary); margin: 5px 0;">
+                                Listen to your recording. If you're not satisfied, click "Retake Recording".
+                            </p>
+                        </div>
+                        
+                        <div id="enrollStatus" class="login-status" aria-live="polite"></div>
+                    </div>
+                    
+                    <button id="enrollSubmit" class="btn btn-primary" type="button" disabled>
+                        <span>Create Account</span>
+                    </button>
+                </div>
+            </section>
+
+            <!-- Footer -->
+            <footer class="login-footer">
+                <div class="footer-content">
+                    <p>Created with ❤️ by Tooba Jatoi</p>
+                    <p>&copy; 2025 Tooba Jatoi. All rights reserved.</p>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <!-- Screen reader only content -->
+    <style>
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+    </style>
+
+    <script src="{{ url_for('static', filename='js/login.js') }}"></script>
+    
+    <!-- Immediate theme application -->
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            
+            const themeIcon = document.getElementById('themeIcon');
+            if (themeIcon) {
+                themeIcon.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+            }
+        })();
+    </script>
+</body>
+</html> 

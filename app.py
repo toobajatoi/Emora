@@ -8,7 +8,7 @@ import os
 import logging
 import whisper
 import numpy as np
-from flask import Flask, render_template, request, jsonify, abort
+from flask import Flask, render_template, request, jsonify, abort, session, redirect, url_for
 from flask_socketio import SocketIO, emit
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
@@ -18,6 +18,7 @@ from feature_extractor import extract_features
 from mood_classifier import detect_mood
 from config import config
 from security import SecurityValidator, SecurityError
+from voice_auth import VoiceAuthenticator
 import tempfile
 import librosa
 import base64
@@ -27,6 +28,7 @@ import subprocess
 from werkzeug.exceptions import BadRequest, RequestEntityTooLarge
 import traceback
 import mimetypes
+import re
 
 # Set up logging with security considerations
 logging.basicConfig(
@@ -38,7 +40,11 @@ logger = logging.getLogger(__name__)
 # Initialize Flask app with security configuration
 app = Flask(__name__)
 mimetypes.add_type('application/javascript', '.js')
-app.config.from_object(config['default'])
+# Force development config for local runs
+app.config.from_object(config['development'])
+
+# Set a secret key for session management
+app.secret_key = os.environ.get('FLASK_SECRET_KEY', 'dev-secret-key')
 
 # Initialize security extensions
 limiter = Limiter(
@@ -47,17 +53,21 @@ limiter = Limiter(
     default_limits=["200 per day", "50 per hour"]
 )
 
-# Initialize Talisman for security headers
-talisman = Talisman(
-    app,
-    content_security_policy=app.config['SECURITY_HEADERS']['CONTENT_SECURITY_POLICY'],
-    force_https=False  # Set to True in production
-)
+# Comment out Talisman for local development to debug session issues
+# talisman = Talisman(
+#     app,
+#     content_security_policy=app.config['SECURITY_HEADERS']['CONTENT_SECURITY_POLICY'],
+#     force_https=False  # Set to True in production
+# )
 
 # Initialize CORS
-CORS(app, origins=app.config['CORS_ORIGINS'])
+# Restrict CORS to local origins for session cookies
+CORS(app, origins=['http://localhost:5001', 'http://127.0.0.1:5001', 'http://192.168.18.10:5001'])
 
-socketio = SocketIO(app, async_mode='threading', cors_allowed_origins=app.config['CORS_ORIGINS'])
+socketio = SocketIO(app, async_mode='threading', cors_allowed_origins='*', logger=True, engineio_logger=True)
+
+# Initialize Voice Authenticator
+voice_auth = VoiceAuthenticator()
 
 # Initialize Whisper model
 logger.info("Loading Whisper model...")
@@ -136,11 +146,68 @@ SUPPORTIVE_MESSAGES = {
 
 CRISIS_KEYWORDS = ["suicide", "kill myself", "end my life", "hopeless", "worthless", "life is not worth", "can't go on", "die", "give up"]
 
+JOURNAL_DIR = 'journals'
+if not os.path.exists(JOURNAL_DIR):
+    os.makedirs(JOURNAL_DIR)
+
+def normalize_phrase(phrase):
+    phrase = phrase.lower()
+    phrase = phrase.replace("i'm", "i am")
+    phrase = phrase.replace("you're", "you are")
+    phrase = phrase.replace("he's", "he is")
+    phrase = phrase.replace("she's", "she is")
+    phrase = phrase.replace("it's", "it is")
+    phrase = phrase.replace("we're", "we are")
+    phrase = phrase.replace("they're", "they are")
+    phrase = phrase.replace("can't", "cannot")
+    phrase = phrase.replace("won't", "will not")
+    phrase = phrase.replace("n't", " not")
+    phrase = phrase.replace("'re", " are")
+    phrase = phrase.replace("'s", " is")
+    phrase = phrase.replace("'d", " would")
+    phrase = phrase.replace("'ll", " will")
+    phrase = phrase.replace("'ve", " have")
+    phrase = phrase.replace("'m", " am")
+    phrase = re.sub(r"[^a-z0-9 ]", "", phrase)  # remove punctuation
+    phrase = phrase.strip()
+    return phrase
+
 @app.route('/')
 @limiter.limit("100 per minute")
 def index():
-    """Main page with rate limiting"""
-    return render_template('index.html')
+    """Login page - redirect to login"""
+    return render_template('login.html')
+
+@app.route('/journal_page')
+@limiter.limit("100 per minute")
+def journal_page():
+    """Main journal page - requires authentication"""
+    if 'user_id' not in session:
+        return redirect(url_for('index'))
+    user_id = session['user_id']
+    # Load user's name from users.json
+    name = user_id
+    try:
+        with open('users.json', 'r') as f:
+            users = json.load(f)
+        if user_id in users and 'name' in users[user_id]:
+            name = users[user_id]['name']
+    except Exception:
+        pass
+    return render_template('index.html', name=name)
+
+@app.route('/logout')
+@limiter.limit("100 per minute")
+def logout():
+    """Logout user and clear session"""
+    session.clear()
+    return redirect(url_for('index'))
+
+@app.route('/voice-test')
+@limiter.limit("100 per minute")
+def voice_test():
+    """Voice authentication test page"""
+    return render_template('voice_test.html')
 
 @socketio.on('audio_data')
 def handle_audio_data(data):
@@ -243,40 +310,51 @@ def handle_audio_data(data):
         # Don't expose internal errors to client
         emit('error', {'message': 'Audio processing failed. Please try again.'})
 
+@app.route('/journal', methods=['GET'])
+@limiter.limit("100 per minute")
+def get_journal():
+    """Return the logged-in user's journal entries only"""
+    if 'user_id' not in session:
+        return redirect(url_for('index'))
+    user_id = session['user_id']
+    journal_path = os.path.join(JOURNAL_DIR, f"{user_id}.json")
+    if os.path.exists(journal_path):
+        with open(journal_path, 'r') as f:
+            entries = json.load(f)
+    else:
+        entries = []
+    return jsonify({'entries': entries})
+
 @app.route('/journal', methods=['POST'])
 @limiter.limit("30 per minute")
 def journal_entry():
-    """Handle journal entries with comprehensive security validation"""
+    """Handle journal entries with comprehensive security validation and per-user storage"""
     try:
+        if 'user_id' not in session:
+            return jsonify({'error': 'Not authenticated'}), 401
+        user_id = session['user_id']
         # Validate JSON payload
         if not request.is_json:
             logger.warning("Non-JSON request received")
             return jsonify({'error': 'Invalid request format'}), 400
-        
         data = request.get_json()
-        print("DEBUG: Received JSON payload:", data)
         if not data:
             logger.warning("Empty JSON payload received")
             return jsonify({'error': 'Empty request payload'}), 400
-        
         # Validate required fields
         is_valid, error_msg = SecurityValidator.validate_json_payload(data, ['text'])
         if not is_valid:
             logger.warning(f"JSON validation failed: {error_msg}")
             return jsonify({'error': error_msg}), 400
-        
-        # Validate text input
         text = data.get('text', '').strip()
         is_valid, error_msg = SecurityValidator.validate_text_input(
             text,
             app.config['MAX_TEXT_LENGTH'],
             0  # Allow empty string for audio
         )
-        
         if not is_valid:
             logger.warning(f"Text validation failed: {error_msg}")
             return jsonify({'error': error_msg}), 400
-        
         audio_b64 = data.get('audio', None)
         transcription = text
         features = {'pitch': 0, 'energy': 0, 'zero_crossing_rate': 0, 'spectral_centroid': 0}
@@ -359,41 +437,381 @@ def journal_entry():
                     except Exception as e:
                         logger.warning(f"Failed to clean up temporary file {temp_path}: {e}")
 
-        # Analyze mood
+        # Analyze mood with enhanced emotional analysis
         logger.info(f"Analyzing mood for text: {transcription[:100]}...")
         mood_result = detect_mood(transcription, features)
         mood = mood_result['mood']
         emoji = mood_result['emoji']
-
-        # Create summary
-        summary = f"You shared that you felt {mood} today."
-        if len(transcription.split()) > 10:
-            summary = f"You talked about: {transcription[:120]}{'...' if len(transcription) > 120 else ''}"
-
-        # Get supportive message
-        supportive_message = random.choice(SUPPORTIVE_MESSAGES.get(mood, SUPPORTIVE_MESSAGES['neutral']))
+        message = mood_result['message']
 
         # Enhanced crisis detection
         crisis_detected = SecurityValidator.detect_crisis_content(transcription, app.config['CRISIS_KEYWORDS'])
         if crisis_detected:
-            supportive_message += " If you're feeling overwhelmed or hopeless, please consider reaching out to a mental health professional or calling a crisis hotline."
+            message += "\n\nIf you're feeling overwhelmed or hopeless, please consider reaching out to a mental health professional or calling a crisis hotline. You don't have to face this alone."
             logger.warning(f"Crisis content detected in journal entry: {transcription[:200]}...")
 
         result = {
             'transcription': transcription,
             'mood': mood,
             'emoji': emoji,
-            'summary': summary,
-            'message': supportive_message,
+            'message': message,
             'features': features
         }
         
-        logger.info(f"Journal analysis completed successfully for mood: {mood}")
+        # Save entry to user's journal file
+        journal_path = os.path.join(JOURNAL_DIR, f"{user_id}.json")
+        if os.path.exists(journal_path):
+            with open(journal_path, 'r') as f:
+                entries = json.load(f)
+        else:
+            entries = []
+        entry = {
+            'text': transcription,
+            'mood': mood,
+            'emoji': emoji,
+            'message': message,
+            'features': features,
+            'timestamp': str(np.datetime64('now'))
+        }
+        entries.append(entry)
+        with open(journal_path, 'w') as f:
+            json.dump(entries, f, indent=2)
+        logger.info(f"Journal analysis completed and saved for user {user_id}, mood: {mood}")
         return jsonify(result)
         
     except Exception as e:
         logger.error(f"Unexpected error in journal entry: {str(e)}", exc_info=True)
         return jsonify({'error': 'An unexpected error occurred. Please try again.'}), 500
+
+@app.route('/journal', methods=['DELETE'])
+@limiter.limit("10 per minute")
+def delete_journal():
+    if 'user_id' not in session:
+        return jsonify({'error': 'Not authenticated'}), 401
+    user_id = session['user_id']
+    journal_path = os.path.join(JOURNAL_DIR, f"{user_id}.json")
+    try:
+        if os.path.exists(journal_path):
+            os.remove(journal_path)
+        return jsonify({'message': 'Journal history deleted.'}), 200
+    except Exception as e:
+        logger.error(f"Failed to delete journal for {user_id}: {e}")
+        return jsonify({'error': 'Failed to delete journal history.'}), 500
+
+# Password Authentication Routes
+@app.route('/auth/register', methods=['POST'])
+@limiter.limit("10 per minute")
+def register_user():
+    """Register new user with password"""
+    try:
+        if not request.is_json:
+            return jsonify({'error': 'Invalid request format'}), 400
+        
+        data = request.get_json()
+        user_id = data.get('user_id')
+        password = data.get('password')
+        name = data.get('name')
+        
+        if not user_id or not password or not name:
+            return jsonify({'error': 'Missing user_id, password, or name'}), 400
+        
+        # Simple password storage (in production, use proper hashing)
+        import hashlib
+        hashed_password = hashlib.sha256(password.encode()).hexdigest()
+        
+        # Store user data (in production, use a database)
+        user_data = {
+            'user_id': user_id,
+            'password_hash': hashed_password,
+            'name': name,
+            'created_at': str(np.datetime64('now'))
+        }
+        
+        # Save to file (simple storage)
+        import json
+        users_file = 'users.json'
+        users = {}
+        
+        try:
+            with open(users_file, 'r') as f:
+                users = json.load(f)
+        except FileNotFoundError:
+            pass
+        
+        if user_id in users:
+            return jsonify({'error': 'User already exists'}), 409
+        
+        users[user_id] = user_data
+        
+        with open(users_file, 'w') as f:
+            json.dump(users, f, indent=2)
+        
+        return jsonify({'message': 'User registered successfully'}), 200
+        
+    except Exception as e:
+        logger.error(f"Error in user registration: {e}")
+        return jsonify({'error': 'Registration failed'}), 500
+
+@app.route('/auth/login', methods=['POST'])
+@limiter.limit("20 per minute")
+def login_user():
+    """Login user with password"""
+    try:
+        if not request.is_json:
+            return jsonify({'error': 'Invalid request format'}), 400
+        
+        data = request.get_json()
+        user_id = data.get('user_id')
+        password = data.get('password')
+        
+        if not user_id or not password:
+            return jsonify({'error': 'Missing user_id or password'}), 400
+        
+        # Load user data
+        import json
+        import hashlib
+        
+        users_file = 'users.json'
+        try:
+            with open(users_file, 'r') as f:
+                users = json.load(f)
+        except FileNotFoundError:
+            return jsonify({'error': 'Invalid credentials'}), 401
+        
+        if user_id not in users:
+            return jsonify({'error': 'Invalid credentials'}), 401
+        
+        user_data = users[user_id]
+        hashed_password = hashlib.sha256(password.encode()).hexdigest()
+        
+        if user_data['password_hash'] != hashed_password:
+            return jsonify({'error': 'Invalid credentials'}), 401
+        
+        session['user_id'] = user_id
+        return jsonify({
+            'authenticated': True,
+            'message': 'Login successful'
+        }), 200
+        
+    except Exception as e:
+        logger.error(f"Error in user login: {e}")
+        return jsonify({'error': 'Login failed'}), 500
+
+# Voice Authentication Routes
+@app.route('/voice/enroll', methods=['POST'])
+@limiter.limit("10 per minute")
+def enroll_voice():
+    """Enroll user's voice for authentication"""
+    try:
+        # Validate JSON payload
+        if not request.is_json:
+            return jsonify({'error': 'Invalid request format'}), 400
+        
+        data = request.get_json()
+        user_id = data.get('user_id')
+        audio_b64 = data.get('audio')
+        passphrase = data.get('passphrase', 'Hello Emora')
+        
+        if not user_id or not audio_b64:
+            return jsonify({'error': 'Missing user_id or audio data'}), 400
+        
+        # Validate audio data
+        if not audio_b64.startswith('data:audio/'):
+            return jsonify({'error': 'Invalid audio data format'}), 400
+        
+        try:
+            audio_data = base64.b64decode(audio_b64.split(',')[1])
+        except Exception as e:
+            return jsonify({'error': 'Invalid audio data encoding'}), 400
+        
+        # Always convert to standard WAV for Whisper
+        import tempfile
+        import uuid
+        import subprocess
+        import os
+        temp_input = f"temp_input_{uuid.uuid4().hex[:8]}"
+        temp_wav = f"temp_wav_{uuid.uuid4().hex[:8]}.wav"
+        try:
+            with open(temp_input, 'wb') as f:
+                f.write(audio_data)
+            # Use ffmpeg to convert to mono 16kHz WAV
+            result = subprocess.run([
+                'ffmpeg', '-y', '-i', temp_input, '-ar', '16000', '-ac', '1', temp_wav
+            ], stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=30)
+            if not os.path.exists(temp_wav):
+                logger.error(f"ffmpeg failed: {result.stderr.decode()}")
+                transcription = 'Audio conversion failed (ffmpeg error)'
+            else:
+                # Transcribe using Whisper
+                transcription = whisper_model.transcribe(temp_wav)["text"]
+        except Exception as e:
+            logger.error(f"Audio conversion/transcription error: {e}")
+            transcription = f'Could not transcribe: {e}'
+        finally:
+            try:
+                if os.path.exists(temp_input):
+                    os.unlink(temp_input)
+                if os.path.exists(temp_wav):
+                    os.unlink(temp_wav)
+            except Exception as e:
+                logger.warning(f"Failed to clean up temp files: {e}")
+        
+        # Create voice profile (using original audio)
+        success = voice_auth.create_voice_profile(user_id, audio_data, passphrase)
+        
+        if success:
+            return jsonify({
+                'message': 'Voice profile created successfully',
+                'transcription': transcription,
+                'passphrase': passphrase,
+                'success': True
+            }), 200
+        else:
+            return jsonify({'error': 'Failed to create voice profile'}), 500
+            
+    except Exception as e:
+        logger.error(f"Error in voice enrollment: {e}")
+        return jsonify({'error': 'Voice enrollment failed'}), 500
+
+@app.route('/voice/verify', methods=['POST'])
+@limiter.limit("20 per minute")
+def verify_voice():
+    """Verify user's voice for authentication"""
+    try:
+        # Validate JSON payload
+        if not request.is_json:
+            logger.warning("Non-JSON request received for voice verification")
+            return jsonify({'error': 'Invalid request format'}), 400
+        
+        data = request.get_json()
+        user_id = data.get('user_id')
+        audio_b64 = data.get('audio')
+        
+        logger.info(f"Voice verification request for user: {user_id}")
+        
+        if not user_id or not audio_b64:
+            logger.warning("Missing user_id or audio data in voice verification request")
+            return jsonify({'error': 'Missing user_id or audio data'}), 400
+        
+        # Validate audio data
+        if not audio_b64.startswith('data:audio/'):
+            logger.warning("Invalid audio data format in voice verification request")
+            return jsonify({'error': 'Invalid audio data format'}), 400
+        
+        try:
+            audio_data = base64.b64decode(audio_b64.split(',')[1])
+            logger.info(f"Decoded audio data: {len(audio_data)} bytes")
+        except Exception as e:
+            logger.error(f"Failed to decode audio data: {e}")
+            return jsonify({'error': 'Invalid audio data encoding'}), 400
+        
+        # Verify voice
+        logger.info(f"Starting voice verification for user: {user_id}")
+        is_authenticated, confidence = voice_auth.verify_voice(user_id, audio_data)
+        
+        # Transcribe the audio to show what was said
+        transcription = "Could not transcribe"
+        try:
+            import uuid
+            temp_path = f"temp_verify_{uuid.uuid4().hex[:8]}.wav"
+            with open(temp_path, 'wb') as f:
+                f.write(audio_data)
+            transcription = whisper_model.transcribe(temp_path)["text"]
+            os.unlink(temp_path)
+        except Exception as e:
+            logger.error(f"Transcription error during verification: {e}")
+        
+        # Passphrase check
+        profile = voice_auth.get_profile_info(user_id)
+        expected_phrase = (profile.get('passphrase', '') if profile else '').strip()
+        spoken_phrase = transcription.strip()
+        expected_phrase_norm = normalize_phrase(expected_phrase)
+        spoken_phrase_norm = normalize_phrase(spoken_phrase)
+        phrase_match = expected_phrase_norm == spoken_phrase_norm
+        if not phrase_match:
+            logger.warning(f"Passphrase mismatch: expected '{expected_phrase_norm}', got '{spoken_phrase_norm}'")
+        
+        logger.info(f"Voice verification result for {user_id}: authenticated={is_authenticated}, confidence={confidence:.3f}, phrase_match={phrase_match}")
+        
+        if is_authenticated and phrase_match:
+            session['user_id'] = user_id
+            auth_result = True
+        else:
+            auth_result = False
+        
+        return jsonify({
+            'authenticated': bool(auth_result),
+            'confidence': float(confidence),
+            'transcription': transcription,
+            'message': 'Voice verified successfully' if auth_result else 'Voice verification failed (voice or phrase did not match)'
+        }), 200
+            
+    except Exception as e:
+        logger.error(f"Error in voice verification: {e}")
+        import traceback
+        logger.error(f"Voice verification traceback: {traceback.format_exc()}")
+        return jsonify({'error': 'Voice verification failed'}), 500
+
+@app.route('/voice/profile/<user_id>', methods=['GET'])
+@limiter.limit("30 per minute")
+def get_voice_profile(user_id):
+    """Get user's voice profile information"""
+    try:
+        profile_info = voice_auth.get_profile_info(user_id)
+        
+        if profile_info:
+            return jsonify(profile_info), 200
+        else:
+            return jsonify({'error': 'Voice profile not found'}), 404
+            
+    except Exception as e:
+        logger.error(f"Error getting voice profile: {e}")
+        return jsonify({'error': 'Failed to get voice profile'}), 500
+
+@app.route('/voice/profile/<user_id>', methods=['DELETE'])
+@limiter.limit("5 per minute")
+def delete_voice_profile(user_id):
+    """Delete user's voice profile"""
+    try:
+        success = voice_auth.delete_voice_profile(user_id)
+        
+        if success:
+            return jsonify({'message': 'Voice profile deleted successfully'}), 200
+        else:
+            return jsonify({'error': 'Voice profile not found'}), 404
+            
+    except Exception as e:
+        logger.error(f"Error deleting voice profile: {e}")
+        return jsonify({'error': 'Failed to delete voice profile'}), 500
+
+@app.route('/voice/debug/<user_id>', methods=['GET'])
+@limiter.limit("10 per minute")
+def debug_voice_profile(user_id):
+    """Debug voice profile information"""
+    try:
+        profile_info = voice_auth.get_profile_info(user_id)
+        
+        if profile_info:
+            # Get detailed profile data
+            profile_path = os.path.join(voice_auth.storage_path, f"{user_id}.json")
+            with open(profile_path, 'r') as f:
+                full_profile = json.load(f)
+            
+            debug_info = {
+                'profile_info': profile_info,
+                'feature_count': len(full_profile.get('features', {})),
+                'feature_names': list(full_profile.get('features', {}).keys()),
+                'similarity_threshold': voice_auth.similarity_threshold,
+                'storage_path': voice_auth.storage_path
+            }
+            
+            return jsonify(debug_info), 200
+        else:
+            return jsonify({'error': 'Voice profile not found'}), 404
+            
+    except Exception as e:
+        logger.error(f"Error getting voice profile debug info: {e}")
+        return jsonify({'error': 'Failed to get voice profile debug info'}), 500
 
 if __name__ == '__main__':
     logger.info("Starting server...")
