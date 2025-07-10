@@ -439,3 +439,63 @@ Created by Tooba Jatoi
     color: var(--text-primary) !important;
     border: 1px solid var(--border-color);
 } 
+
+[data-theme="dark"] .login-status {
+    background: var(--bg-secondary) !important;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--border-color) !important;
+}
+[data-theme="dark"] .login-status.success {
+    background: rgba(72, 187, 120, 0.15) !important;
+    color: var(--success-color) !important;
+    border: 1px solid rgba(72, 187, 120, 0.3) !important;
+}
+[data-theme="dark"] .login-status.error {
+    background: rgba(245, 101, 101, 0.15) !important;
+    color: var(--error-color) !important;
+    border: 1px solid rgba(245, 101, 101, 0.3) !important;
+}
+[data-theme="dark"] .login-status.info {
+    background: rgba(66, 153, 225, 0.15) !important;
+    color: var(--info-color) !important;
+    border: 1px solid rgba(66, 153, 225, 0.3) !important;
+} 
+
+[data-theme="dark"] .login-status.error[style],
+[data-theme="dark"] .login-status[style*="background: #f8f9fa"],
+[data-theme="dark"] .login-status[style*="background:#f8f9fa"] {
+    background: var(--bg-secondary) !important;
+    color: var(--text-primary) !important;
+    border-left: 5px solid var(--error-color) !important;
+    border-radius: 8px !important;
+}
+[data-theme="dark"] .login-status.error[style] strong,
+[data-theme="dark"] .login-status[style*="background: #f8f9fa"] strong {
+    color: var(--text-primary) !important;
+}
+[data-theme="dark"] .login-status.error[style] small,
+[data-theme="dark"] .login-status[style*="background: #f8f9fa"] small {
+    color: var(--text-muted) !important;
+} 
+
+[data-theme="dark"] div[style*="background: #f8f9fa"],
+[data-theme="dark"] div[style*="background:#f8f9fa"],
+[data-theme="dark"] div[style*="background: #fff"],
+[data-theme="dark"] div[style*="background:#fff"],
+[data-theme="dark"] div[style*="background: #ffffff"],
+[data-theme="dark"] div[style*="background:#ffffff"] {
+    background: var(--bg-secondary) !important;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 8px !important;
+}
+[data-theme="dark"] div[style*="background: #f8f9fa"] strong,
+[data-theme="dark"] div[style*="background: #fff"] strong,
+[data-theme="dark"] div[style*="background: #ffffff"] strong {
+    color: var(--text-primary) !important;
+}
+[data-theme="dark"] div[style*="background: #f8f9fa"] small,
+[data-theme="dark"] div[style*="background: #fff"] small,
+[data-theme="dark"] div[style*="background: #ffffff"] small {
+    color: var(--text-muted) !important;
+} 

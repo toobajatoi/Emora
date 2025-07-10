@@ -20,7 +20,7 @@ class VoiceAuthenticator:
     
     def __init__(self, storage_path: str = "voice_profiles"):
         self.storage_path = storage_path
-        self.similarity_threshold = 0.50  # Much lower threshold for testing
+        self.similarity_threshold = 0.85  # Stricter threshold for real authentication
         self.ensure_storage_dir()
     
     def ensure_storage_dir(self):

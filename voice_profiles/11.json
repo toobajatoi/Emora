@@ -1,20 +1,20 @@
 {
   "user_id": "11",
-  "passphrase": "tiger",
+  "passphrase": "Hello Emora",
   "features": {
-    "pitch_mean": 620.6654052734375,
-    "pitch_std": 513.3903198242188,
-    "pitch_range": 2548.67724609375,
-    "spectral_centroid_mean": 1272.8220363776118,
-    "spectral_centroid_std": 172.79801255873946,
-    "mfcc_mean": -22.430072784423828,
-    "mfcc_std": 106.98761749267578,
-    "energy_mean": 0.0712641254067421,
-    "energy_std": 0.12064126133918762,
-    "zcr_mean": 0.07795916863207547,
-    "zcr_std": 0.014753682760447374,
-    "rolloff_mean": 2463.001179245283,
-    "rolloff_std": 463.81579284771425
+    "pitch_mean": 1085.7791748046875,
+    "pitch_std": 1173.5946044921875,
+    "pitch_range": 3829.93896484375,
+    "spectral_centroid_mean": 1242.3417695464402,
+    "spectral_centroid_std": 425.3907617177782,
+    "mfcc_mean": -23.126079559326172,
+    "mfcc_std": 116.56391906738281,
+    "energy_mean": 0.042620301246643066,
+    "energy_std": 0.05577380582690239,
+    "zcr_mean": 0.0806741153492647,
+    "zcr_std": 0.06881978606575109,
+    "rolloff_mean": 2379.136029411765,
+    "rolloff_std": 753.130757082369
   },
-  "created_at": "2025-07-09T19:38:55"
+  "created_at": "2025-07-10T02:28:18"
 }
